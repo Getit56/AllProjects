@@ -1,77 +1,373 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Nalo SMS Test</title>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>St. Joseph Preparatory School Portal</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 <style>
-    body {
-      font-family: "Inter", sans-serif;
-      background: #f5f7fa;
-      padding: 40px;
-      color: #333;
-    }
-    h2 { color: #0d47a1; }
-    input, textarea, button {
-      width: 100%;
-      margin: 10px 0;
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-    button {
-      background: #0d47a1;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:hover { background: #1565c0; }
-    #result {
-      background: #eef3ff;
-      border-radius: 8px;
-      padding: 10px;
-      margin-top: 15px;
-    }
+:root {
+  --school-blue: #0d47a1;
+  --school-gold: #f9a825;
+  --text-dark: #1c1c1c;
+  --text-light: #ffffff;
+  --background-light: #f5f7fb;
+  --card-bg: rgba(255, 255, 255, 0.9);
+}
+* { box-sizing: border-box; margin:0; padding:0; }
+html, body { height:100%; font-family:"Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: linear-gradient(135deg, #e3f2fd, #fffde7); color: var(--text-dark); display:flex; flex-direction:column; scroll-behavior:smooth; }
+
+@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+@keyframes slideUp { from {opacity:0; transform:translateY(30px);} to {opacity:1; transform:translateY(0);} }
+@keyframes glowPulse { 0%,100% { box-shadow:0 0 0px rgba(0,0,0,0);} 50% { box-shadow:0 0 15px rgba(249,168,37,0.5);} }
+@keyframes bounce3D { 0%,100% { transform:translateY(0) scale(1); box-shadow:0 5px 0 #0a306a; } 25% { transform:translateY(-10px) scale(1.05); box-shadow:0 12px 0 #0a306a; } 50% { transform:translateY(0) scale(1); box-shadow:0 5px 0 #0a306a; } 75% { transform:translateY(-6px) scale(1.03); box-shadow:0 8px 0 #0a306a; } }
+@keyframes slightShake { 0%,100% { transform:translateX(0); } 25% { transform:translateX(-3px); } 50% { transform:translateX(3px); } 75% { transform:translateX(-2px); } }
+
+.main-header { position:fixed; top:0; left:0; width:100%; padding:20px 0; background:linear-gradient(to right, var(--school-blue), #08306b); color: var(--text-light); text-align:center; border-bottom:5px solid var(--school-gold); z-index:1000; animation:fadeIn 1s ease-in; box-shadow:0 4px 10px rgba(0,0,0,0.3); }
+.main-header h1 { font-size:2.4em; font-weight:700; letter-spacing:1px; }
+.main-header .fa-graduation-cap { color: var(--school-gold); margin-right:10px; animation: glowPulse 2.5s infinite ease-in-out; }
+
+.portal-container { display:flex; justify-content:center; align-items:flex-start; flex:1; width:100%; max-width:1600px; margin:0 auto; padding:140px 40px 100px; gap:40px; animation:fadeIn 1.2s ease-in-out; }
+
+.main-nav { flex:0 0 280px; background: var(--card-bg); border-radius:15px; backdrop-filter:blur(10px); box-shadow:0 8px 20px rgba(0,0,0,0.1); padding:25px; animation:slideUp 1s ease; }
+.main-nav h2 { color: var(--school-blue); border-bottom:2px solid #ddd; padding-bottom:10px; margin-bottom:20px; }
+.nav-link { display:flex; align-items:center; text-decoration:none; font-weight:600; padding:12px 14px; border-radius:10px; border:1px solid #e0e0e0; margin-bottom:12px; transition:all 0.3s ease; }
+.icon-margin { margin-right:12px; transition:transform 0.3s ease; }
+.nav-link.student { background:#f1f8e9; color:#2e7d32; border-left:5px solid var(--school-gold); }
+.nav-link.student:hover { background: var(--school-gold); color:#fff; transform:translateX(5px); }
+.nav-link.admin { background:#e3f2fd; color: var(--school-blue); border-left:5px solid var(--school-blue); }
+.nav-link.admin:hover { background: var(--school-blue); color:#fff; transform:translateX(5px); }
+
+.apply-teacher { border-left:5px solid var(--school-blue); text-align:center; padding:25px; cursor:pointer; transition: transform 0.3s ease, box-shadow 0.3s ease; animation: slightShake 4s infinite ease-in-out; }
+.apply-teacher:hover { transform: scale(1.03); box-shadow:0 0 25px rgba(13,71,161,0.2); }
+.apply-now-btn { display:inline-flex; align-items:center; justify-content:center; margin-top:15px; padding:12px 28px; font-weight:700; font-size:1.05em; color:#fff; background: var(--school-blue); border-radius:10px; border:none; cursor:pointer; animation:bounce3D 3s infinite ease-in-out; box-shadow:0 6px 0 #08306b; transition:all 0.3s ease; }
+.apply-now-btn:hover { transform:scale(1.05); box-shadow:0 10px 0 #05204e; }
+
+.quick-links { display:flex; gap:15px; margin-bottom:25px; flex-wrap:wrap; }
+.quick-link-btn {
+    flex:1;
+    min-width:150px;
+    padding:15px 10px;
+    background: var(--school-gold);
+    color: var(--text-dark);
+    font-weight:700;
+    text-align:center;
+    border-radius:10px;
+    text-decoration:none;
+    transition: all 0.3s ease;
+    border: 2px solid var(--school-gold);
+}
+.quick-link-btn:hover { background: var(--school-blue); color:var(--text-light); border-color:var(--school-blue); transform:translateY(-3px); box-shadow:0 5px 10px rgba(0,0,0,0.1); }
+.quick-link-btn i { margin-right:5px; }
+
+.welcome-section { flex:1; background: var(--card-bg); border-radius:15px; backdrop-filter:blur(10px); box-shadow:0 8px 25px rgba(0,0,0,0.08); padding:40px; animation:slideUp 1.2s ease; }
+.welcome-section h3 { font-size:1.9em; color: var(--school-blue); border-bottom:2px dashed #ddd; padding-bottom:10px; margin-bottom:25px; }
+.info-card { background:rgba(255,255,255,0.95); border:1px solid #eee; border-left:5px solid var(--school-gold); border-radius:10px; padding:20px 25px; margin-bottom:20px; transition:all 0.3s ease; animation:fadeIn 1.5s ease; cursor:pointer; }
+.info-card:hover { transform:translateY(-6px); box-shadow:0 10px 30px rgba(0,0,0,0.1); }
+.info-card h4 { font-size:1.25em; color: var(--school-blue); margin-bottom:8px; }
+
+.portal-footer { position:fixed; bottom:0; left:0; width:100%; background:linear-gradient(to right, var(--school-blue), #08306b); color:#f0f0f0; text-align:center; padding:15px 0; font-size:0.95em; border-top:4px solid var(--school-gold); box-shadow:0 -4px 10px rgba(0,0,0,0.3); }
+.portal-footer a { color: var(--school-gold); text-decoration:none; font-weight:600; }
+
+@media(max-width:950px) { .portal-container { flex-direction:column; padding:130px 20px 100px; } .main-nav, .welcome-section { width:100%; } }
+
+#ai-speaker {
+  position:fixed;
+  bottom:30px;
+  right:30px;
+  width:70px;
+  height:70px;
+  background: var(--school-blue);
+  color: var(--text-light);
+  border-radius:50%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:2em;
+  cursor:pointer;
+  box-shadow:0 8px 20px rgba(0,0,0,0.3);
+  /* The bounce3D animation is now used for the icon on hover/idle for style */
+  animation:bounce3D 3s infinite ease-in-out;
+  z-index:2000;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+#ai-speaker:hover { transform:scale(1.15); box-shadow:0 12px 25px rgba(0,0,0,0.4); }
+/* Apply glowPulse when listening */
+#ai-speaker.listening { animation: glowPulse 1.5s infinite ease-in-out; }
+
+.highlight { border: 3px solid var(--school-gold); background: rgba(249,168,37,0.15); border-radius: 10px; transition: all 0.3s ease; }
 </style>
   </head>
   <body>
-	<h2>📩 Nalo SMS Test</h2>
-	<label>Destination (e.g. 233501234567)</label>
-	<input type="text" id="phone" placeholder="Enter recipient phone number">
 
-	<label>Message</label>
-	<textarea id="message" rows="3" placeholder="Enter your message"></textarea>
+	<header class="main-header">
+	  <h1><i class="fas fa-graduation-cap"></i> St. Joseph Preparatory School Portal</h1>
+	</header>
 
-	<button id="sendBtn">Send Message</button>
+	<main class="portal-container">
+	  <nav class="main-nav">
+		<h2>School Services</h2>
+		<ul>
+		  <li><a href="registration/index.html" class="nav-link student" target="_blank" rel="noopener noreferrer"><i class="fas fa-user-plus icon-margin"></i> Registration (Student)</a></li>
+		  <li><a href="registration/reg.html" class="nav-link admin" target="_blank" rel="noopener noreferrer"><i class="fas fa-user-shield icon-margin"></i> Registration (Admin)</a></li>
+		  <li><a href="studentreport/index.html" class="nav-link student" target="_blank" rel="noopener noreferrer"><i class="fas fa-file-alt icon-margin"></i> Student Report</a></li>
+		  <li><a href="resultsdashboard/index.html" class="nav-link admin" target="_blank" rel="noopener noreferrer"><i class="fas fa-chart-line icon-margin"></i> Student Report Analysis(Admin)</a></li>
+		  <li><a href="registration/fees.html" class="nav-link student" target="_blank" rel="noopener noreferrer"><i class="fas fa-money-check-alt icon-margin"></i> School Fees</a></li>
+		  <li><a href="admin/feeslogin.html" class="nav-link admin" target="_blank" rel="noopener noreferrer"><i class="fas fa-cogs icon-margin"></i> School Fees Analysis(Admin)</a></li>
+		  <li><a href="Registration/stafflogin.html" class="nav-link admin" target="_blank" rel="noopener noreferrer"><i class="fas fa-user-tie icon-margin"></i> Academic Activities</a></li>
+		  <li><a href="Registration/logincanteen.html" class="nav-link admin" target="_blank" rel="noopener noreferrer"><i class="fas fa-utensils icon-margin"></i> Canteen</a></li>
+		  <li><a href="Registration/adminlogin.html" class="nav-link admin" target="_blank" rel="noopener noreferrer"><i class="fas fa-lock icon-margin"></i> ADMIN</a></li>
+		</ul>
+	  </nav>
 
-	<div id="result"></div>
+	  <section class="welcome-section">
+		<div class="info-card apply-teacher" id="applyTeacher" onclick="window.location.href='registration/teacherform.html'">
+		  <h4><i class="fas fa-briefcase"></i> Apply for Teaching (Admission Available)</h4>
+		  <p>We are currently accepting new teacher applications. Join <strong>St. Joseph Preparatory School Pokukrom</strong> — where excellence begins!</p>
+		  <button class="apply-now-btn"><i class="fas fa-paper-plane"></i> Apply Now</button>
+		</div>
+
+		<h3 id="welcomeTitle">Welcome to the School Portal</h3>
+		<p>Access all school services and information easily using the left menu. The portal is designed for efficiency and clarity for students, teachers, and administrators alike.</p>
+
+		<div class="quick-links" id="quickLinks">
+		  <a href="registration/index.html" class="quick-link-btn"><i class="fas fa-user-plus"></i> Enroll Student</a>
+		  <a href="registration/feeslogin.html" class="quick-link-btn"><i class="fas fa-dollar-sign"></i> Pay Fees</a>
+		  <a href="studentreport/index.html" class="quick-link-btn"><i class="fas fa-file-pdf"></i> View Report Card</a>
+		</div>
+
+		<div class="info-card student-info" id="studentInfo">
+		  <h4><i class="fas fa-user-graduate"></i> Student Information</h4>
+		  <p>Register students, view records, and access report cards all in one place.</p>
+		</div>
+
+		<div class="info-card teacher-info" id="teacherInfo">
+		  <h4><i class="fas fa-chalkboard-teacher"></i> Teacher Records</h4>
+		  <p>Access teacher directories, subjects, and teaching schedules.</p>
+		</div>
+
+		<div class="info-card admin-info" id="adminInfo">
+		  <h4><i class="fas fa-lock"></i> Administration Access</h4>
+		  <p>Admins can manage student data, update records, and generate reports securely.</p>
+		</div>
+	  </section>
+	</main>
+
+	<footer class="portal-footer">
+	  &copy; 2025 St. Joseph Preparatory School. All rights reserved. | <a href="#">Contact Us</a>
+	</footer>
+
+	<div id="ai-speaker" title="Click to start/stop AI listening"><i class="fas fa-robot"></i></div>
 
 <script>
-    document.getElementById("sendBtn").addEventListener("click", async () => {
-      const phone = document.getElementById("phone").value.trim();
-      const message = encodeURIComponent(document.getElementById("message").value.trim());
-      const username = "YOUR_USERNAME";  // <-- replace locally only
-      const password = "YOUR_PASSWORD";  // <-- replace locally only
-      const sender = "STJOSEPH";
+// --- GLOBAL STATE & CONFIG ---
+const ELEMENTS_TO_HIGHLIGHT = {
+  reports: ".quick-links a[href*='studentreport/index.html']",
+  fees: ".quick-links a[href*='fees.html']",
+  registration: ".quick-links a[href*='registration/index.html']",
+  teacher: "#teacherInfo",
+  admin: "#adminInfo",
+  apply: "#applyTeacher",
+  staff: "a[href*='Registration/staff.html']",
+  canteen: "a[href*='Registration/canteen.html']"
+};
 
-      if (!phone || !message) {
-        alert("Please fill in all fields.");
-        return;
-      }
+const aiSpeaker = document.getElementById("ai-speaker");
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null;
+let isListening = false;
+let currentHighlight = null;
 
-      const url = `https://sms.nalosolutions.com/smsbackend/clientapi/Resl_Nalo/send-message/?username=${username}&password=${password}&type=0&destination=${phone}&dlr=1&source=${sender}&message=${message}`;
+// --- PADBOT 3.0 STATE ---
+let lastCommand = ""; // To remember previous user command for context
 
-      document.getElementById("result").innerHTML = "⏳ Sending message...";
+// --- UTILITIES ---
+function speak(text, elementId, callback) {
+  if (!('speechSynthesis' in window)) return;
+  try { window.speechSynthesis.cancel(); } catch (e) {}
 
-      try {
-        const response = await fetch(url);
-        const text = await response.text();
-        document.getElementById("result").innerHTML = `<b>Response:</b><br>${text}`;
-      } catch (err) {
-        document.getElementById("result").innerHTML = `❌ Error: ${err.message}`;
-      }
-    });
+  if (currentHighlight) {
+    const prev = document.querySelector(currentHighlight);
+    if (prev) prev.classList.remove('highlight');
+  }
+
+  if (elementId) {
+    const el = document.querySelector(elementId);
+    if (el) {
+      el.classList.add('highlight');
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      currentHighlight = elementId;
+    }
+  }
+
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = "en-US";
+  utter.rate = 1;
+  utter.onend = () => callback && callback();
+  window.speechSynthesis.speak(utter);
+}
+
+// --- PROCESS COMMANDS ---
+function processCommand(command) {
+  const lower = command.toLowerCase();
+  console.log("Command received:", lower);
+
+  // Save last command for context
+  lastCommand = lower;
+
+  // --- Smart Navigation ---
+  if (lower.includes("open") || lower.includes("go to")) {
+    if (lower.includes("report")) {
+      speak("Opening student report card now.", ELEMENTS_TO_HIGHLIGHT.reports, () => window.open("studentreport/index.html", "_blank"));
+      return;
+    } else if (lower.includes("fee")) {
+      speak("Opening the school fees page.", ELEMENTS_TO_HIGHLIGHT.fees, () => window.open("registration/fees.html", "_blank"));
+      return;
+    } else if (lower.includes("register") || lower.includes("enroll")) {
+      speak("Opening student registration page.", ELEMENTS_TO_HIGHLIGHT.registration, () => window.open("registration/index.html", "_blank"));
+      return;
+    } else if (lower.includes("teacher")) {
+      speak("Opening teacher records section.", ELEMENTS_TO_HIGHLIGHT.teacher, () => window.open("registration/teacherform.html", "_blank"));
+      return;
+    } else if (lower.includes("admin")) {
+      speak("Opening admin dashboard.", ELEMENTS_TO_HIGHLIGHT.admin, () => window.open("Registration/admin/index.html", "_blank"));
+      return;
+    } else if (lower.includes("staff") || lower.includes("activities")) {
+      speak("Opening academic activities section.", ELEMENTS_TO_HIGHLIGHT.staff, () => window.open("Registration/staff.html", "_blank"));
+      return;
+    } else if (lower.includes("canteen")) {
+      speak("Opening canteen administration panel.", ELEMENTS_TO_HIGHLIGHT.canteen, () => window.open("Registration/canteen.html", "_blank"));
+      return;
+    }
+  }
+
+  // --- Info Guidance ---
+  if (lower.includes("report") || lower.includes("results")) {
+    speak("To view student reports, click on the View Report Card quick link.", ELEMENTS_TO_HIGHLIGHT.reports);
+  } else if (lower.includes("fee") || lower.includes("payment")) {
+    speak("To pay school fees, click the Pay Fees quick link.", ELEMENTS_TO_HIGHLIGHT.fees);
+  } else if (lower.includes("register") || lower.includes("enroll")) {
+    speak("To enroll a new student, click the Enroll Student quick link.", ELEMENTS_TO_HIGHLIGHT.registration);
+  } else if (lower.includes("teacher")) {
+    speak("Teacher information can be found in the Teacher Records section.", ELEMENTS_TO_HIGHLIGHT.teacher);
+  } else if (lower.includes("admin")) {
+    speak("Administration access details are under the Administration Access card.", ELEMENTS_TO_HIGHLIGHT.admin);
+  } else if (lower.includes("apply")) {
+    speak("Click Apply Now to apply for a teaching position.", ELEMENTS_TO_HIGHLIGHT.apply);
+  } else if (lower.includes("canteen")) {
+    speak("Canteen management can be accessed from the left menu.", ELEMENTS_TO_HIGHLIGHT.canteen);
+  }
+
+  // --- General AI Intelligence ---
+  else if (lower.includes("who are you")) {
+    speak("Hello! I am PadBot, your voice assistant created by Padmore. I help you navigate the St. Joseph Preparatory School Portal efficiently.");
+  } else if (lower.includes("what is the purpose") || lower.includes("purpose of this system") || lower.includes("why this system")) {
+    speak("The purpose of this system is to simplify school management by giving students, teachers, and administrators easy access to registration, reports, and fee information.");
+  } else if (lower.includes("hello") || lower.includes("hi")) {
+    speak("Hello Padmore! I am PadBot 3.0. Ask me about reports, fees, registration, or admin functions, and I can guide you.");
+  } else if (lower.includes("thank you") || lower.includes("stop") || lower.includes("exit")) {
+    speak("You're welcome. I’ll stop listening now. Click the robot to start again.");
+    toggleRecognition();
+    return;
+  } else if (lower.includes("help")) {
+    speak("I can open and guide you through reports, registration, fees, admin sections, and can even remember your last command for follow-ups. Try saying 'open report card' or 'go to canteen'.");
+  } else if (lower.includes("repeat") || lower.includes("last command")) {
+    if (lastCommand) {
+      speak("Repeating last command guidance.", null, () => processCommand(lastCommand));
+    } else {
+      speak("I have no previous command stored yet.");
+    }
+  } else {
+    speak("I didn't quite catch that. Try asking me about fees, reports, registration, or say 'help' for assistance.");
+  }
+
+  // --- Recommendations (contextual prompts) ---
+  if (lower.includes("report") && !lower.includes("open")) {
+    speak("Tip: You can say 'open report card' to directly go to the student report section.");
+  } else if (lower.includes("fee") && !lower.includes("open")) {
+    speak("Tip: You can say 'open fees page' to pay school fees directly.");
+  }
+
+  // Resume listening after response
+  if (isListening) {
+    setTimeout(() => {
+      if (isListening && !window.speechSynthesis.speaking) recognition.start();
+    }, 600);
+  }
+}
+
+// --- RECOGNITION SETUP ---
+function initializeRecognition() {
+  if (!SpeechRecognition) {
+    aiSpeaker.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+    aiSpeaker.title = "Speech Recognition not supported by this browser.";
+    aiSpeaker.style.animation = "none";
+    return;
+  }
+
+  recognition = new SpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.lang = "en-US";
+
+  recognition.onstart = () => {
+    isListening = true;
+    aiSpeaker.innerHTML = '<i class="fas fa-microphone-alt"></i>';
+    aiSpeaker.classList.add("listening");
+    aiSpeaker.style.animation = "none";
+  };
+
+  recognition.onresult = (e) => {
+    const transcript = e.results[0][0].transcript;
+    processCommand(transcript);
+  };
+
+  recognition.onend = () => {
+    isListening = false;
+    aiSpeaker.innerHTML = '<i class="fas fa-robot"></i>';
+    aiSpeaker.classList.remove("listening");
+    aiSpeaker.style.animation = "bounce3D 3s infinite ease-in-out";
+    if (currentHighlight) {
+      const el = document.querySelector(currentHighlight);
+      if (el) el.classList.remove("highlight");
+      currentHighlight = null;
+    }
+  };
+
+  recognition.onerror = (event) => {
+    console.error("Recognition error:", event.error);
+    if (isListening) speak("I had trouble hearing you. Please click the robot to try again.");
+    isListening = false;
+    aiSpeaker.innerHTML = '<i class="fas fa-robot"></i>';
+    aiSpeaker.classList.remove("listening");
+  };
+}
+
+function toggleRecognition() {
+  if (!recognition) {
+    initializeRecognition();
+    if (!recognition) return;
+  }
+  if (isListening) {
+    recognition.stop();
+    window.speechSynthesis.cancel();
+  } else {
+    try {
+      recognition.start();
+    } catch (e) {
+      speak("The microphone is busy. Please wait and try again.");
+    }
+  }
+}
+
+// --- EVENT LISTENERS ---
+aiSpeaker.addEventListener("click", toggleRecognition);
+window.onload = initializeRecognition;
+window.addEventListener("beforeunload", () => {
+  if (recognition && isListening) recognition.stop();
+  window.speechSynthesis.cancel();
+});
 </script>
   </body>
 </html>
+
