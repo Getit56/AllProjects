@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Nalo SMS Test</title>
+<style>
+    body {
+      font-family: "Inter", sans-serif;
+      background: #f5f7fa;
+      padding: 40px;
+      color: #333;
+    }
+    h2 { color: #0d47a1; }
+    input, textarea, button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #0d47a1;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover { background: #1565c0; }
+    #result {
+      background: #eef3ff;
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 15px;
+    }
+</style>
+  </head>
+  <body>
+	<h2>📩 Nalo SMS Test</h2>
+	<label>Destination (e.g. 233501234567)</label>
+	<input type="text" id="phone" placeholder="Enter recipient phone number">
+
+	<label>Message</label>
+	<textarea id="message" rows="3" placeholder="Enter your message"></textarea>
+
+	<button id="sendBtn">Send Message</button>
+
+	<div id="result"></div>
+
+<script>
+    document.getElementById("sendBtn").addEventListener("click", async () => {
+      const phone = document.getElementById("phone").value.trim();
+      const message = encodeURIComponent(document.getElementById("message").value.trim());
+      const username = "YOUR_USERNAME";  // <-- replace locally only
+      const password = "YOUR_PASSWORD";  // <-- replace locally only
+      const sender = "STJOSEPH";
+
+      if (!phone || !message) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      const url = `https://sms.nalosolutions.com/smsbackend/clientapi/Resl_Nalo/send-message/?username=${username}&password=${password}&type=0&destination=${phone}&dlr=1&source=${sender}&message=${message}`;
+
+      document.getElementById("result").innerHTML = "⏳ Sending message...";
+
+      try {
+        const response = await fetch(url);
+        const text = await response.text();
+        document.getElementById("result").innerHTML = `<b>Response:</b><br>${text}`;
+      } catch (err) {
+        document.getElementById("result").innerHTML = `❌ Error: ${err.message}`;
+      }
+    });
+</script>
+  </body>
+</html>
