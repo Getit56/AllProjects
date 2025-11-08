@@ -1,0 +1,112 @@
+/* --- Full Page Setup --- */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;   
+  align-items: flex-start;
+  background: linear-gradient(135deg, #007bff, #00bfff);
+  font-family: "Poppins", sans-serif;
+}
+
+/* --- Login Box --- */
+.login-container {
+  background: #fff;
+  padding: 40px 30px;
+  border-radius: 20px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+  width: 90%;
+  max-width: 380px;
+  text-align: center;
+  margin-top: 10vh; /* Moves the box slightly down for all screen sizes */
+}
+
+/* --- Headings --- */
+.login-container h1 {
+  color: #007bff;
+  margin-bottom: 10px;
+  font-size: 2em;
+}
+
+.login-container h2 {
+  color: #333;
+  font-size: 1.1em;
+  margin-bottom: 25px;
+  font-weight: 400;
+}
+
+/* --- Form Elements --- */
+label {
+  display: block;
+  text-align: left;
+  margin-bottom: 5px;
+  color: #444;
+}
+
+input[type="password"],
+input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+/* --- Show Password Checkbox --- */
+.show-password {
+  text-align: left;
+  margin-bottom: 15px;
+  font-size: 14px;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* --- Button --- */
+button {
+  width: 100%;
+  padding: 12px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: #0056b3;
+}
+
+/* --- Error Message --- */
+#error-message {
+  color: red;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+/* --- Responsive Adjustments --- */
+@media screen and (max-width: 480px) {
+  .login-container {
+    padding: 30px 20px;
+    margin-top: 5vh;
+  }
+
+  .login-container h1 {
+    font-size: 1.8em;
+  }
+
+  .login-container h2 {
+    font-size: 1em;
+  }
+
+  input[type="password"], input[type="text"], button {
+    font-size: 14px;
+    padding: 10px;
+  }
+}

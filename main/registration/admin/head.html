@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Teacher Applications - St. Joseph Preparatory School Pokukrom</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root{
+  --blue:#0d47a1;
+  --gold:#f9a825;
+  --light:#f5f9ff;
+  --card:#ffffff;
+  --muted:#666;
+  --success:#2e7d32;
+  --danger:#c62828;
+  --info:#1565c0;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,system-ui,Segoe UI,Roboto;
+  background:linear-gradient(180deg,var(--light),#fff);
+  color:#222;
+}
+header{
+  background:linear-gradient(90deg,var(--blue),#144ea4);
+  color:#fff;
+  padding:20px;
+  text-align:center;
+  box-shadow:0 6px 18px rgba(13,47,102,0.18);
+}
+header h1{margin:0;font-size:1.25rem;font-weight:700;}
+main{max-width:1100px;margin:26px auto;padding:0 16px 80px;}
+.application-container {
+  background:#ffffff;
+  border-radius:16px;
+  margin-bottom:26px;
+  padding:22px 24px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.05);
+  border:1px solid rgba(13,71,161,0.06);
+  transition:transform .25s ease,box-shadow .25s ease;
+  position: relative;
+  overflow:hidden;
+  border-bottom: 2px solid #f2f2f2;
+}
+.application-container:hover {
+  transform:translateY(-5px);
+  box-shadow:0 12px 24px rgba(0,0,0,0.08);
+}
+.card-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px;
+  border-bottom:1px solid #e0e0e0;
+  padding-bottom:10px;
+}
+.card-head h3{
+  margin:0;
+  color:var(--blue);
+  font-size:1.15rem;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 12px;
+  border-radius:20px;
+  font-weight:600;
+  font-size:0.88rem;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
+}
+.pill.approved{ background:#e8f5e9; color:var(--success); }
+.pill.interview{ background:#e3f2fd; color:var(--info); }
+.pill.pending{ background:#fff8e1; color:var(--gold); }
+.pill.rejected{ background:#fff0f0; color:var(--danger); }
+.card-body{margin-top:10px;color:#333;font-size:0.95rem;line-height:1.4;}
+.row{margin-top:6px;}
+.muted{color:var(--muted);font-size:0.9rem;}
+strong{color:#222;}
+.actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
+.btn{
+  flex:1;min-width:100px;border:0;border-radius:8px;padding:10px 12px;
+  font-weight:700;color:#fff;cursor:pointer;
+  display:inline-flex;align-items:center;gap:8px;justify-content:center;
+  transition: all .15s ease;
+}
+.btn.approve{background:var(--success);}
+.btn.interview{background:var(--info);}
+.btn.reject{background:var(--danger);}
+.btn:hover{filter:brightness(1.05);}
+.btn:active{transform:scale(0.97);}
+.empty{text-align:center;color:var(--muted);padding:40px 12px;}
+.confirm-overlay, .loading-overlay {
+  position: fixed;inset: 0;background: rgba(0,0,0,0.6);
+  display: flex;justify-content: center;align-items: center;
+  z-index: 999;backdrop-filter: blur(4px);
+  animation: fadeIn .3s ease forwards;
+}
+@keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+.confirm-box {
+  background: #fff;padding: 28px 26px;border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  text-align: center;width: 90%;max-width: 380px;
+  animation: pop .35s ease forwards;
+}
+@keyframes pop {0%{transform:scale(.85);opacity:0;}60%{transform:scale(1.05);opacity:1;}100%{transform:scale(1);}}
+.confirm-box h2 {margin-bottom: 10px;color: var(--blue);}
+.confirm-buttons {margin-top: 20px;display: flex;justify-content: space-around;}
+.confirm-buttons button {
+  padding: 10px 20px;border-radius: 8px;border: none;font-weight: 600;
+  cursor: pointer;color: #fff;transition: all .2s ease;
+}
+.confirm-buttons .yes {background: var(--success);}
+.confirm-buttons .no {background: var(--danger);}
+.spinner {
+  border: 5px solid rgba(255,255,255,0.3);
+  border-top: 5px solid var(--gold);
+  border-radius: 50%;
+  width: 60px;height: 60px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {100%{transform:rotate(360deg)}}
+.status-msg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -60%) scale(0.8);
+  color: #fff;
+  padding: 22px 34px;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 1rem;
+  text-align: center;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.25);
+  opacity: 0;
+  animation: slideBounceFade 3s ease forwards;
+  z-index: 1000;
+}
+.status-msg.approve { background: var(--success); }
+.status-msg.interview { background: var(--info); }
+.status-msg.reject { background: var(--danger); }
+@keyframes slideBounceFade {
+  0% {opacity:0; transform:translate(-50%, -80%) scale(0.8);}
+  20% {opacity:1; transform:translate(-50%, -50%) scale(1.05);}
+  40% {transform:translate(-50%, -45%) scale(0.95);}
+  60% {transform:translate(-50%, -50%) scale(1);}
+  90% {opacity:1;}
+  100% {opacity:0; transform:translate(-50%, -40%) scale(0.9);}
+}
+footer {
+  text-align: center;color: var(--muted);
+  padding: 20px 0;border-top: 1px solid #ddd;
+  font-size: 0.9rem;
+}
+</style>
+  </head>
+  <body>
+	<header>
+	  <h1>Welcome to St. Joseph Preparatory School Pokukrom</h1>
+	</header>
+
+	<main>
+	  <div id="cardsContainer"></div>
+	  <div id="emptyMessage" class="empty" style="display:none">No teacher applications found.</div>
+	</main>
+
+	<footer>© 2025 St. Joseph Preparatory School — All Rights Reserved</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { getDatabase, ref, onValue, update, remove } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAoSRm7DKQB0bTRCKNELxbEVQA7y0hGgT4",
+  authDomain: "school-registration-a9774.firebaseapp.com",
+  databaseURL: "https://school-registration-a9774-default-rtdb.firebaseio.com",
+  projectId: "school-registration-a9774",
+  storageBucket: "school-registration-a9774.firebasestorage.app",
+  messagingSenderId: "967547068125",
+  appId: "1:967547068125:web:0a5708c69c84d1bac64534"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const HUBTEL_BASE = "https://smsc.hubtel.com/v1/messages/send";
+const HUBTEL_CLIENT_ID = "jnhvrhia";
+const HUBTEL_CLIENT_SECRET = "vcbxefjc";
+const SENDER_ID = "StJosephPrep";
+
+function formatPhone(raw){if(!raw)return"";let s=raw.toString().trim();if(s.startsWith("+"))s=s.slice(1);if(s.startsWith("0"))s="233"+s.slice(1);return s;}
+function sendSMSHubtel(phone,message){
+  const to=encodeURIComponent(formatPhone(phone));
+  const content=encodeURIComponent(message);
+  const url=`${HUBTEL_BASE}?clientsecret=${HUBTEL_CLIENT_SECRET}&clientid=${HUBTEL_CLIENT_ID}&from=${SENDER_ID}&to=${to}&content=${content}`;
+  return fetch(url).then(r=>r.text()).catch(console.error);
+}
+
+const container=document.getElementById("cardsContainer");
+const emptyMsg=document.getElementById("emptyMessage");
+const teachersRef=ref(db,"teachers");
+
+onValue(teachersRef,snap=>{
+  container.innerHTML="";
+  let hasApplications=false;
+
+  snap.forEach(child=>{
+    const data=child.val(), id=child.key;
+    const status=(data.status||"Pending").toLowerCase();
+
+    // REMOVE approved from this page
+    if(status==="approved") return;
+
+    hasApplications=true;
+    const sticker=status==="interview"?"💬":"🕒";
+    const pillClass=status==="interview"?"interview":"pending";
+
+    const div=document.createElement("div");
+    div.className="application-container";
+    div.innerHTML=`
+      <div class="card-head">
+        <h3>${sticker} ${data.fullName||"Unnamed"}</h3>
+        <div class="pill ${pillClass}">${status.charAt(0).toUpperCase()+status.slice(1)}</div>
+      </div>
+      <div class="card-body">
+        <div class="row muted"><i class="fas fa-phone"></i> ${data.phoneNumber||"—"}</div>
+        <div class="row"><strong>Qualification:</strong> ${data.qualification||"—"} ${data.otherQualification?"("+data.otherQualification+")":""}</div>
+        <div class="row"><strong>Class Level:</strong> ${data.classLevel||"—"}</div>
+        <div class="row"><strong>Subject:</strong> ${data.subjectSpecialization||"—"}</div>
+        <div class="actions">
+          <button class="btn approve"><i class="fas fa-check"></i> Approve</button>
+          <button class="btn interview"><i class="fas fa-comments"></i> Interview</button>
+          <button class="btn reject"><i class="fas fa-times"></i> Reject</button>
+        </div>
+      </div>`;
+    
+    const approveBtn=div.querySelector(".approve");
+    const interviewBtn=div.querySelector(".interview");
+    const rejectBtn=div.querySelector(".reject");
+
+    approveBtn.onclick=()=>confirmAction("Approve this application?", async ()=>{
+      await handleAction(id,data,"Approved",div,"approve");
+      div.remove(); // remove approved from this page
+    });
+    interviewBtn.onclick=()=>confirmAction("Schedule interview for this applicant?",()=>handleAction(id,data,"Interview",div,"interview"));
+    rejectBtn.onclick=()=>confirmAction("Reject this application?",()=>handleAction(id,data,"Rejected",div,"reject"));
+
+    container.appendChild(div);
+  });
+
+  emptyMsg.style.display=hasApplications?"none":"block";
+});
+
+const siteLink="https://stjosephpreparatoryschoolportal.netlify.app/";
+function makeApprovedMessage(n){return `Dear ${n}, your application to St. Joseph Preparatory School has been APPROVED! Visit the school premises for onboarding.\n${siteLink}`;}
+function makeInterviewMessage(n){return `Dear ${n}, your application to St. Joseph Preparatory School is shortlisted for INTERVIEW. Visit the school for your schedule.\n${siteLink}`;}
+function makeRejectedMessage(n){return `Dear ${n}, thank you for applying to St. Joseph Preparatory School. Unfortunately, you were not selected.\n${siteLink}`;}
+
+function showStatus(div,type,msg){
+  const el=document.createElement("div");
+  el.className=`status-msg ${type}`;
+  el.textContent=msg;
+  div.appendChild(el);
+  setTimeout(()=>el.remove(),3000);
+}
+
+function confirmAction(message,callback){
+  const overlay=document.createElement("div");
+  overlay.className="confirm-overlay";
+  overlay.innerHTML=`
+    <div class="confirm-box">
+      <h2>Confirmation</h2>
+      <p>${message}</p>
+      <div class="confirm-buttons">
+        <button class="yes">Yes</button>
+        <button class="no">No</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.querySelector(".no").onclick=()=>overlay.remove();
+  overlay.querySelector(".yes").onclick=()=>{overlay.remove();callback();};
+}
+
+function showLoadingForFiveSeconds(){
+  return new Promise(resolve=>{
+    const overlay=document.createElement("div");
+    overlay.className="loading-overlay";
+    overlay.innerHTML='<div class="spinner"></div>';
+    document.body.appendChild(overlay);
+    setTimeout(()=>{overlay.remove();resolve();},5000);
+  });
+}
+
+async function handleAction(id,d,status,div,type){
+  try{
+    await showLoadingForFiveSeconds();
+    if(type==="reject"){
+      await remove(ref(db,"teachers/"+id));
+      sendSMSHubtel(d.phoneNumber,makeRejectedMessage(d.fullName));
+      showStatus(div,"reject","❌ Rejected Successfully");
+      setTimeout(()=>div.remove(),3000);
+    } else {
+      await update(ref(db,"teachers/"+id),{status:status});
+      if(type==="approve"){
+        sendSMSHubtel(d.phoneNumber,makeApprovedMessage(d.fullName));
+        showStatus(div,"approve","✅ Approved Successfully");
+        // Approved will be removed from the page in onClick above
+      } else if(type==="interview"){
+        sendSMSHubtel(d.phoneNumber,makeInterviewMessage(d.fullName));
+        showStatus(div,"interview","💬 Interview Scheduled");
+      }
+    }
+  }catch(err){
+    console.error(err);
+    showStatus(div,"reject","❌ Action failed — try again");
+  }
+}
+</script>
+  </body>
+</html>

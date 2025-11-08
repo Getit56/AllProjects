@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>St. Joseph Prep — Manage Students (Delete)</title>
+
+	<!-- Styling: matches your portal -->
+<style>
+  :root{
+    --primary:#004d99; --accent:#f7a01a; --bg:#f4f6f9; --card:#fff;
+    --muted:#6b7280; --danger:#dc3545; --success:#28a745;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,Segoe UI,Roboto,Arial;background:var(--bg);color:#222}
+  header{background:var(--primary);color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
+  .logo{font-weight:700}
+  .container{max-width:1100px;margin:20px auto;padding:18px}
+  .intro{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:12px}
+  .intro h1{margin:0;font-size:1.25rem;color:var(--primary)}
+  .intro .meta{color:var(--muted);font-size:0.95rem}
+
+  /* Cards grid */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+
+  .class-card{
+    background:var(--card);padding:14px;border-radius:10px;border:1px solid rgba(0,0,0,0.04);
+    box-shadow:0 6px 18px rgba(2,6,23,0.04);cursor:pointer;transition:transform .12s,box-shadow .12s;
+  }
+  .class-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(2,6,23,0.08)}
+  .class-top{display:flex;justify-content:space-between;align-items:center}
+  .class-name{font-weight:700;color:var(--primary)}
+  .class-count{font-weight:700;font-size:1.05rem}
+  .class-sub{color:var(--muted);font-size:0.9rem;margin-top:8px}
+
+  /* Expanded students list area */
+  .students-list{margin-top:12px;padding-top:12px;border-top:1px solid #f0f2f5}
+  .student-item{display:flex;justify-content:space-between;align-items:center;padding:8px 6px;border-radius:8px;margin-bottom:8px}
+  .student-item:hover{background:#f7fafc}
+  .student-name{font-weight:600}
+  .student-meta{color:var(--muted);font-size:0.9rem}
+  .delete-btn{background:var(--danger);color:#fff;border:none;padding:8px 10px;border-radius:8px;cursor:pointer}
+  .delete-btn:hover{opacity:0.95}
+
+  /* Modal confirm */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:60}
+  .modal{background:#fff;padding:18px;border-radius:12px;max-width:420px;width:100%;box-shadow:0 14px 50px rgba(2,6,23,0.2)}
+  .modal h3{margin:0 0 8px 0}
+  .modal p{color:var(--muted)}
+  .modal .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
+  .btn{padding:8px 12px;border-radius:8px;border:none;cursor:pointer}
+  .btn.secondary{background:#eef2ff;color:var(--primary)}
+  .btn.danger{background:var(--danger);color:#fff}
+
+  /* Admin badge */
+  .badge{background:#fff;padding:6px 10px;border-radius:999px;border:1px solid rgba(0,0,0,0.06);font-weight:600;color:var(--primary)}
+
+  /* Empty state */
+  .empty{padding:18px;text-align:center;color:var(--muted);border-radius:8px;background:linear-gradient(180deg,#fff,#fbfdff);border:1px dashed #e6eefc}
+
+  @media(max-width:700px){
+    .intro{flex-direction:column;align-items:stretch;gap:8px}
+    .cards{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+  }
+</style>
+  </head>
+  <body>
+
+	<header>
+	  <div class="logo">St. Joseph Prep School</div>
+	  <div style="color:#fff" id="accessLabel">Access: Checking…</div>
+	</header>
+
+	<div class="container">
+	  <div class="intro">
+		<div>
+		  <h1>Manage Students — Delete (Admin)</h1>
+		  <div class="meta">Click a class card to view students. Click a student to confirm deletion.</div>
+		</div>
+		<div style="display:flex;gap:10px;align-items:center">
+		  <div id="adminBadge" class="badge" style="display:none">ADMIN</div>
+		  <button id="refreshAll" class="btn secondary">Refresh</button>
+		</div>
+	  </div>
+
+	  <!-- Cards -->
+	  <div id="classesGrid" class="cards"></div>
+
+	  <!-- placeholder -->
+	  <div id="emptyNote" style="margin-top:16px" class="empty">Waiting for data…</div>
+	</div>
+
+	<!-- modal -->
+	<div id="modalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true">
+	  <div class="modal">
+		<h3 id="modalTitle">Confirm Deletion</h3>
+		<p id="modalBody">Are you sure you want to delete this student?</p>
+		<div class="actions">
+		  <button id="modalCancel" class="btn secondary">Cancel</button>
+		  <button id="modalDelete" class="btn danger">Delete</button>
+		</div>
+	  </div>
+	</div>
+
+	<!-- Firebase compat -->
+	<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+<script>
+/*
+ Features implemented:
+ - Show cards for all classes (auto-generated from CLASS_LIST)
+ - Each card shows live student count for that class
+ - Clicking card expands inline student list (expand/collapse)
+ - Clicking a student opens a styled confirmation modal
+ - Admin only: delete button shown in modal; non-admins only view
+ - Realtime updates: listener on /students refreshes counts and lists
+ */
+
+const CLASS_LIST = [
+  "Nursery 1","Nursery 2","KG 1","KG 2",
+  "Primary 1","Primary 2","Primary 3","Primary 4","Primary 5","Primary 6",
+  "JHS 1","JHS 2","JHS 3"
+];
+
+// Firebase config — your SIS project
+const firebaseConfig = {
+  apiKey: "AIzaSyAoSRm7DKQB0bTRCKNELxbEVQA7y0hGgT4",
+  authDomain: "school-registration-a9774.firebaseapp.com",
+  databaseURL: "https://school-registration-a9774-default-rtdb.firebaseio.com",
+  projectId: "school-registration-a9774",
+  storageBucket: "school-registration-a9774.firebasestorage.app",
+  messagingSenderId: "967547068125",
+  appId: "1:967547068125:web:0a5708c69c84d1bac64534"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const studentsRef = db.ref('students');
+
+let allStudents = {}; // key -> student object
+let expandedClass = null;
+let userAccessClass = null; // 'admin' or class or null
+let selectedToDelete = null; // { key, name, classApplying }
+
+// Access passwords map (same as before)
+const ACCESS_LEVELS = {
+  "Rom123@": "admin",
+  "Romjhs3": "JHS 3",
+  "Romjhs2": "JHS 2",
+  "Romjhs1": "JHS 1",
+  "Rom6": "Primary 6",
+  "Rom5": "Primary 5",
+  "Rom4": "Primary 4",
+  "Rom3": "Primary 3",
+  "Rom2": "Primary 2",
+  "Rom1": "Primary 1",
+  "Romkg2": "KG 2",
+  "Romkg1": "KG 1",
+  "Romnursery1": "Nursery 1"
+};
+
+// DOM
+const classesGrid = document.getElementById('classesGrid');
+const emptyNote = document.getElementById('emptyNote');
+const adminBadge = document.getElementById('adminBadge');
+const accessLabel = document.getElementById('accessLabel');
+const refreshAll = document.getElementById('refreshAll');
+
+// modal elements
+const modalBackdrop = document.getElementById('modalBackdrop');
+const modalTitle = document.getElementById('modalTitle');
+const modalBody = document.getElementById('modalBody');
+const modalCancel = document.getElementById('modalCancel');
+const modalDelete = document.getElementById('modalDelete');
+
+refreshAll.addEventListener('click', ()=> { loadStudentsOnce(); });
+
+// Initialize access — prompt user for password; abort if canceled
+function initializeAccess(){
+  let isValid = false;
+  while(!isValid){
+    const pwd = prompt("Enter access password (admin required to delete). Cancel to continue as viewer:");
+    if(pwd === null){
+      accessLabel.textContent = "Access: Viewer";
+      userAccessClass = null;
+      return;
+    }
+    const level = ACCESS_LEVELS[pwd];
+    if(level){
+      userAccessClass = level;
+      accessLabel.textContent = level === 'admin' ? "Access: Admin" : "Access: " + level;
+      if(level === 'admin'){ adminBadge.style.display = 'block'; }
+      else { adminBadge.style.display = 'none'; }
+      isValid = true;
+      return;
+    }
+    alert('Invalid password — try again or Cancel to continue as viewer.');
+  }
+}
+
+// Build cards UI
+function renderClassCards(){
+  classesGrid.innerHTML = '';
+  CLASS_LIST.forEach(cls => {
+    const card = document.createElement('div');
+    card.className = 'class-card';
+    card.dataset.class = cls;
+    card.innerHTML = `
+      <div class="class-top">
+        <div class="class-name">${cls}</div>
+        <div class="class-count" id="count-${escapeId(cls)}">0</div>
+      </div>
+      <div class="class-sub" id="sub-${escapeId(cls)}">Click to view students</div>
+      <div class="students-list" id="list-${escapeId(cls)}" style="display:none"></div>
+    `;
+    // toggle expand/collapse
+    card.addEventListener('click', (e) => {
+      // prevent clicks from child delete buttons triggering card toggle
+      if(e.target.closest('.delete-btn')) return;
+      toggleClass(cls);
+    });
+    classesGrid.appendChild(card);
+  });
+}
+
+// Escape for DOM id
+function escapeId(s){ return s.replace(/\s+/g,'_').replace(/[^\w\-]/g,''); }
+
+// Load students once (and set up realtime listener)
+function loadStudentsOnce(){
+  emptyNote.style.display = 'none';
+  classesGrid.style.display = 'grid';
+  // attach realtime listener
+  studentsRef.on('value', snapshot => {
+    const val = snapshot.val() || {};
+    allStudents = val;
+    updateCountsAndLists();
+  }, err => {
+    console.error('students listener error', err);
+    emptyNote.textContent = 'Error loading students — check console';
+  });
+}
+
+// Update counts (per class) and expanded lists
+function updateCountsAndLists(){
+  // compute counts
+  const counts = {};
+  CLASS_LIST.forEach(c => counts[c] = 0);
+  for(const key in allStudents){
+    const s = allStudents[key];
+    const cls = s.classApplying || 'Unassigned';
+    if(counts[cls] !== undefined) counts[cls]++; // only count known classes
+  }
+  // update cards counters
+  CLASS_LIST.forEach(c => {
+    const el = document.getElementById('count-' + escapeId(c));
+    if(el) el.textContent = counts[c] || 0;
+  });
+  // update expanded list content if any
+  if(expandedClass){
+    renderStudentList(expandedClass);
+  }
+  // show empty state if no students at all
+  const totalStudents = Object.keys(allStudents).length;
+  if(totalStudents === 0){
+    emptyNote.style.display = 'block';
+    emptyNote.textContent = 'No students found in the SIS database.';
+  } else {
+    emptyNote.style.display = 'none';
+  }
+}
+
+// Toggle expand/collapse
+function toggleClass(cls){
+  const listEl = document.getElementById('list-' + escapeId(cls));
+  if(!listEl) return;
+  if(expandedClass && expandedClass !== cls){
+    // collapse previous
+    const prev = document.getElementById('list-' + escapeId(expandedClass));
+    if(prev) prev.style.display = 'none';
+  }
+  if(listEl.style.display === 'none' || listEl.style.display === ''){
+    expandedClass = cls;
+    renderStudentList(cls);
+    listEl.style.display = 'block';
+    const sub = document.getElementById('sub-' + escapeId(cls));
+    if(sub) sub.textContent = 'Click student to delete (admin) — or click card to collapse';
+  } else {
+    listEl.style.display = 'none';
+    expandedClass = null;
+    const sub = document.getElementById('sub-' + escapeId(cls));
+    if(sub) sub.textContent = 'Click to view students';
+  }
+}
+
+// Render student list for a class
+function renderStudentList(cls){
+  const listEl = document.getElementById('list-' + escapeId(cls));
+  listEl.innerHTML = '';
+  // filter students belonging to this class
+  const rows = [];
+  for(const key in allStudents){
+    const s = allStudents[key];
+    if(s.classApplying === cls){
+      rows.push({ key, name: `${s.firstName || ''} ${s.middleName ? s.middleName + ' ' : ''}${s.surname || ''}`.trim(), obj: s});
+    }
+  }
+  if(rows.length === 0){
+    listEl.innerHTML = `<div class="empty">No students in ${cls}.</div>`;
+    return;
+  }
+  // sort by name
+  rows.sort((a,b)=> a.name.localeCompare(b.name));
+  rows.forEach(r => {
+    const item = document.createElement('div');
+    item.className = 'student-item';
+    item.innerHTML = `
+      <div>
+        <div class="student-name">${escapeHtml(r.name)}</div>
+        <div class="student-meta">Key: ${r.key}</div>
+      </div>
+      <div>
+        ${ userAccessClass === 'admin' 
+           ? `<button class="delete-btn" data-key="${r.key}" data-name="${escapeHtml(r.name)}" data-class="${cls}">Delete</button>`
+           : `<span style="color:var(--muted);font-weight:600">View only</span>`
+        }
+      </div>
+    `;
+    // clicking student row should open confirm modal (for both admin/viewer) — but only show delete action for admin
+    item.addEventListener('click', (e) => {
+      // if clicked delete button, handle separately
+      const btn = e.target.closest('.delete-btn');
+      const studentKey = btn ? btn.dataset.key : r.key;
+      const studentName = btn ? btn.dataset.name : r.name;
+      const studentClass = btn ? btn.dataset.class : cls;
+      if(btn){
+        // admin delete button clicked
+        openConfirmModal(studentKey, studentName, studentClass);
+      } else {
+        // clicking row (non-button): also open modal but if not admin show viewing message
+        openConfirmModal(studentKey, studentName, studentClass);
+      }
+      e.stopPropagation();
+    });
+    listEl.appendChild(item);
+  });
+}
+
+// Modal control
+function openConfirmModal(key, name, cls){
+  selectedToDelete = { key, name, classApplying: cls };
+  modalTitle.textContent = `Delete student?`;
+  const adminText = userAccessClass === 'admin' ? '' : ' (You do not have admin rights — deletion disabled)';
+  modalBody.innerHTML = `Are you sure you want to delete <strong>${escapeHtml(name)}</strong> from <strong>${escapeHtml(cls)}</strong>?${adminText}`;
+  // show modal
+  modalBackdrop.style.display = 'flex';
+  // set delete button state
+  if(userAccessClass === 'admin'){
+    modalDelete.disabled = false;
+    modalDelete.style.display = 'inline-block';
+  } else {
+    modalDelete.disabled = true;
+    modalDelete.style.display = 'none';
+  }
+}
+
+// Close modal
+modalCancel.addEventListener('click', ()=> {
+  modalBackdrop.style.display = 'none';
+  selectedToDelete = null;
+});
+modalBackdrop.addEventListener('click', (e)=> {
+  if(e.target === modalBackdrop){ modalBackdrop.style.display = 'none'; selectedToDelete = null; }
+});
+
+// Perform delete
+modalDelete.addEventListener('click', async ()=> {
+  if(!selectedToDelete) return;
+  const key = selectedToDelete.key;
+  try {
+    await studentsRef.child(key).remove();
+    // success — modal will auto close when listener updates UI
+    modalBackdrop.style.display = 'none';
+    selectedToDelete = null;
+    // optional toast
+    alert('Student deleted ✓');
+  } catch(err){
+    console.error('delete failed', err);
+    alert('Delete failed: ' + (err.message || 'unknown'));
+  }
+});
+
+// small helpers
+function escapeHtml(s){ return (s||'').toString().replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+// initial sequence
+(function init(){
+  initializeAccess();          // prompt for password
+  renderClassCards();          // build cards
+  loadStudentsOnce();          // attach realtime listener
+})();
+</script>
+  </body>
+</html>

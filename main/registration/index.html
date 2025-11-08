@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>St. Joseph Preparatory School - Student Registration</title>
+	<link rel="stylesheet" href="css/styles.css">
+  </head>
+  <body>
+	<div class="form-container">
+	  <h1>St. Joseph Preparatory School</h1>
+	  <h2>Student Registration Form</h2>
+
+	  <form id="registerForm">
+		<h3>Student Information</h3>
+		<div class="form-group">
+		  <label>First Name *</label>
+		  <input type="text" id="firstName" placeholder="Enter student's first name">
+		</div>
+		<div class="form-group">
+		  <label>Middle Name</label>
+		  <input type="text" id="middleName" placeholder="Enter student's middle name">
+		</div>
+		<div class="form-group">
+		  <label>Surname *</label>
+		  <input type="text" id="surname" placeholder="Enter student's surname">
+		</div>
+		<div class="form-group">
+		  <label>Date of Birth</label>
+		  <input type="date" id="dob">
+		</div>
+		<div class="form-group">
+		  <label>Gender</label>
+		  <select id="gender">
+			<option value="">Select gender</option>
+			<option>Male</option>
+			<option>Female</option>
+		  </select>
+		</div>
+		<div class="form-group">
+		  <label>Place of Birth</label>
+		  <input type="text" id="birthplace" placeholder="Enter place of birth">
+		</div>
+		<div class="form-group">
+		  <label>Nationality</label>
+		  <select id="nationality">
+			<option value="Ghanaian" selected>Ghanaian</option>
+			<option value="Other">Other (type below)</option>
+		  </select>
+		  <input type="text" id="nationalityCustom" placeholder="Type nationality if Other" style="margin-top:5px;">
+		</div>
+		<div class="form-group">
+		  <label>Religion</label>
+		  <select id="religion">
+			<option value="Christian">Christian</option>
+			<option value="Muslim">Muslim</option>
+			<option value="Traditional">Traditional</option>
+			<option value="None">None</option>
+		  </select>
+		</div>
+		<div class="form-group">
+		  <label>Denomination</label>
+		  <select id="denomination">
+			<option value="Catholic">Catholic</option>
+			<option value="Pentecost">Pentecost</option>
+			<option value="Other">Other (type below)</option>
+		  </select>
+		  <input type="text" id="denominationCustom" placeholder="Type denomination if Other" style="margin-top:5px;">
+		</div>
+
+		<h3>Academic Information</h3>
+		<div class="form-group">
+		  <label>Class Applying For *</label>
+		  <select id="classApplying">
+			<option value="">Select class</option>
+			<option>Nursery 1</option>
+			<option>Nursery 2</option>
+			<option>KG 1</option>
+			<option>KG 2</option>
+			<option>Primary 1</option>
+			<option>Primary 2</option>
+			<option>Primary 3</option>
+			<option>Primary 4</option>
+			<option>Primary 5</option>
+			<option>Primary 6</option>
+			<option>JHS 1</option>
+			<option>JHS 2</option>
+			<option>JHS 3</option>
+		  </select>
+		</div>
+		<div class="form-group">
+		  <label>Previous School</label>
+		  <input type="text" id="previousSchool" placeholder="Enter previous school name">
+		</div>
+		<div class="form-group">
+		  <label>Reason for Transfer / Enrollment</label>
+		  <textarea id="reason" placeholder="Write reason here..."></textarea>
+		</div>
+
+		<h3>Parent / Guardian Information</h3>
+		<div class="form-group">
+		  <label>Guardian Full Name</label>
+		  <input type="text" id="guardianName" placeholder="Enter parent/guardian name">
+		</div>
+		<div class="form-group">
+		  <label>Relationship to Student</label>
+		  <input type="text" id="relationship" placeholder="e.g. Father, Mother, Uncle">
+		</div>
+		<div class="form-group">
+		  <label>Occupation</label>
+		  <input type="text" id="occupation" placeholder="e.g. Teacher, Trader, Driver">
+		</div>
+		<div class="form-group">
+		  <label>Phone Number</label>
+		  <input type="tel" id="phone" placeholder="e.g. 024XXXXXXX">
+		</div>
+		<div class="form-group">
+		  <label>Email Address</label>
+		  <input type="email" id="email" placeholder="Enter email">
+		</div>
+
+		<h3>Contact & Address</h3>
+		<div class="form-group">
+		  <label>Home Address</label>
+		  <textarea id="address" placeholder="Enter full home address"></textarea>
+		</div>
+		<div class="form-group">
+		  <label>Town / City</label>
+		  <input type="text" id="town" placeholder="Enter town or city">
+		</div>
+		<div class="form-group">
+		  <label>Region</label>
+		  <select id="region">
+			<option value="">Select Region</option>
+			<option>Ashanti</option>
+			<option>Greater Accra</option>
+			<option>Central</option>
+			<option>Volta</option>
+			<option>Eastern</option>
+			<option>Western</option>
+			<option>Northern</option>
+			<option>Upper East</option>
+			<option>Upper West</option>
+			<option>North East</option>
+			<option>Oti</option>
+			<option>Ahafo</option>
+			<option>Western North</option>
+			<option>Savannah</option>
+			<option>Bono East</option>
+			<option>Bono</option>
+		  </select>
+		</div>
+
+		<h3>Health / Emergency Information</h3>
+		<div class="form-group">
+		  <label>Does the student have any medical condition?</label>
+		  <textarea id="medical" placeholder="If yes, please specify..."></textarea>
+		</div>
+		<div class="form-group">
+		  <label>Emergency Contact Name</label>
+		  <input type="text" id="emergencyName" placeholder="Enter emergency contact name">
+		</div>
+		<div class="form-group">
+		  <label>Emergency Contact Number</label>
+		  <input type="tel" id="emergencyNumber" placeholder="Enter emergency contact number">
+		</div>
+
+		<div class="form-group">
+		  <label>Date of Registration</label>
+		  <input type="date" id="registrationDate">
+		</div>
+
+		<button type="submit">Submit Registration</button>
+	  </form>
+
+	  <div style="text-align:center; margin-top:20px;">
+		<a href="dashboard.html" target="_blank" style="color:#1565c0; font-weight:bold; text-decoration:underline;">
+		  View Registered Students Dashboard
+		</a>
+	  </div>
+	</div>
+
+	<!-- Firebase SDKs -->
+	<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+	<script src="js/scripts.js"></script>
+  </body>
+</html>

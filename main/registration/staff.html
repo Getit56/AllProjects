@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>St. Joseph Prep - Teacher Portal</title>
+
+<style>
+:root {
+    --primary-color: #004d99; /* St. Joseph Blue */
+    --secondary-color: #f7a01a; /* Gold/Yellow Accent */
+    --light-bg: #f4f6f9;
+    --dark-text: #333;
+    --border-color: #ddd;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+body {
+    background-color: var(--light-bg);
+    color: var(--dark-text);
+}
+
+/* --- General Portal Styles --- */
+header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.main-container {
+    display: flex;
+    min-height: calc(100vh - 60px);
+}
+
+.sidebar {
+    width: 250px;
+    background-color: white;
+    padding: 20px 0;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.nav-item {
+    padding: 15px 25px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    font-weight: 500;
+}
+
+.nav-item:hover {
+    background-color: var(--light-bg);
+    color: var(--primary-color);
+}
+
+.nav-item.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-left: 5px solid var(--secondary-color);
+}
+
+.icon {
+    margin-right: 10px;
+    font-size: 1.1em;
+}
+
+.content-area {
+    flex-grow: 1;
+    padding: 30px;
+}
+
+.content-area h1 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+
+.widget {
+    background-color: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* --- Attendance Specific Styles --- */
+.attendance-controls {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.attendance-controls label {
+    font-weight: bold;
+    color: var(--dark-text);
+}
+
+.attendance-controls input[type="date"],
+.attendance-controls select {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.primary-btn {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.primary-btn:hover {
+    background-color: #003366; /* Darker blue */
+}
+
+/* Attendance List Table */
+#attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+#attendance-table th, 
+#attendance-table td {
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    text-align: left;
+}
+
+#attendance-table th {
+    background-color: var(--light-bg);
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Status Selection Buttons */
+.status-select {
+    display: flex;
+    gap: 5px;
+}
+
+.status-btn {
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: all 0.2s;
+    background-color: #f0f0f0;
+    color: var(--dark-text);
+}
+
+.status-btn:not(.active):hover {
+    border-color: var(--primary-color);
+}
+
+.status-btn.present.active {
+    background-color: #28a745; /* Green */
+    color: white;
+    border-color: #28a745;
+}
+
+.status-btn.absent.active {
+    background-color: #dc3545; /* Red */
+    color: white;
+    border-color: #dc3545;
+}
+
+.status-btn.late.active {
+    background-color: #ffc107; /* Yellow/Gold */
+    color: var(--dark-text);
+    border-color: #ffc107;
+}
+
+/* Notes Input */
+#attendance-table input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+/* Status Summary */
+.status-summary {
+    display: flex;
+    gap: 30px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 15px;
+}
+
+.status-summary strong {
+    font-size: 1.1em;
+}
+
+/* Save Button & Status */
+.save-btn {
+    margin-top: 20px;
+    width: 150px;
+    float: right;
+}
+
+.save-status-text {
+    margin-top: 30px;
+    float: right;
+    margin-right: 20px;
+    font-style: italic;
+    color: #28a745;
+}
+
+/* Dashboard Specific Styles (Integrated from staff.html/css) */
+.quick-links {
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+.link-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: left;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-align: center;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-icon {
+    font-size: 2em;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+}
+
+.announcements-widget li {
+    padding: 10px 0;
+    border-bottom: 1px dotted var(--border-color);
+    font-size: 0.95em;
+}
+
+.announcements-widget li:last-child {
+    border-bottom: none;
+}
+
+.announcements-widget .urgent {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.deadline-item {
+    padding: 10px 0;
+    border-bottom: 1px dotted var(--border-color);
+    font-size: 0.95em;
+}
+
+.view-all-link {
+    display: block;
+    margin-top: 15px;
+    text-align: right;
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+/* --- NEW RESPONSIVE STYLES FOR ALL DEVICES AND BROWSERS --- */
+@media (max-width: 768px) {
+    /* 1. Header Adjustment */
+    header {
+        padding: 10px 15px;
+        flex-direction: column; /* Stack logo and user-info */
+        gap: 5px;
+    }
+    .user-info {
+        font-size: 0.8em;
+    }
+
+    /* 2. Main Layout Adjustment: Stack sidebar and content */
+    .main-container {
+        flex-direction: column;
+        min-height: auto;
+    }
+
+    /* 3. Sidebar Adjustment: Horizontal scroll menu for navigation */
+    .sidebar {
+        width: 100%;
+        padding: 0;
+        box-shadow: none;
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+        border-bottom: 1px solid var(--border-color);
+        /* Hide scrollbar for aesthetic, but allow scrolling */
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+    }
+    /* Hide scrollbar in webkit browsers */
+    .sidebar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .nav-item {
+        flex-shrink: 0;
+        padding: 10px 15px;
+    }
+    .nav-item.active {
+        border-left: none;
+        border-bottom: 3px solid var(--secondary-color);
+    }
+    .icon {
+        display: none;
+    }
+
+    /* 4. Content Area Adjustment */
+    .content-area {
+        padding: 15px;
+    }
+
+    .content-area h1 {
+        font-size: 1.5em;
+    }
+
+    /* 5. Dashboard Grid Adjustment: Single column for smaller screens */
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    /* 6. Quick Link Cards: Stack them vertically */
+    .link-cards {
+        grid-template-columns: 1fr;
+    }
+
+    /* 7. Attendance Controls: Stack inputs/selects and buttons */
+    .attendance-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .attendance-controls button {
+        width: 100%;
+    }
+
+    /* 8. Attendance Summary: Wrap elements */
+    .status-summary {
+        flex-wrap: wrap;
+        gap: 15px;
+        font-size: 0.9em;
+    }
+
+    /* 9. Save Button & Status: Make it full-width */
+    .save-btn, .save-status-text {
+        float: none;
+        display: block;
+        width: 100%;
+        text-align: center;
+        margin: 10px 0;
+    }
+    .save-status-text {
+        margin-top: 5px;
+        margin-right: 0;
+    }
+
+    /* 10. Table Responsiveness: Allow horizontal scroll for wide tables */
+    #attendance-table th,
+    #attendance-table td {
+        font-size: 0.8em;
+        padding: 8px 5px;
+    }
+    .status-btn {
+        padding: 6px 8px;
+        font-size: 0.75em;
+    }
+    .widget {
+        overflow-x: auto; /* Allows horizontal scrolling of content in the widget */
+    }
+    #attendance-table {
+        min-width: 600px; /* Forces the table to be wide enough to scroll if needed */
+    }
+}
+</style>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  </head>
+  <body onload="initApp()">
+
+    <header>
+	  <div class="logo">St. Joseph Prep School</div>
+	  <div class="user-info">Welcome, Teacher Name | Logout</div>
+    </header>
+
+    <div class="main-container">
+	  <nav class="sidebar">
+		<div class="nav-item active" id="link-dashboard">
+		  <span class="icon">🏠</span> Dashboard
+		</div>
+		<a href="studentreport/index.html" class="nav-item" style="text-decoration: none; color: inherit;">
+		  <span class="icon">📝</span> Grade Entry & Reports
+		</a>
+
+		<div class="nav-item" id="link-attendance">
+		  <span class="icon">⏱️</span> Daily Attendance
+		</div>
+		<a href="dashboard.html" class="nav-item" id="link-roster" style="text-decoration: none; color: inherit;">
+		  <span class="icon">🧑‍🎓</span> Student Roster
+		</a>
+		<div class="nav-item">
+		  <span class="icon">📚</span> Document Library
+		</div>
+		<div class="nav-item">
+		  <span class="icon">🗓️</span> Calendar
+		</div>
+	  </nav>
+
+	  <main class="content-area" id="dashboard-view">
+		<h1>Teacher Dashboard - Term 1, 2025/2026</h1>
+
+		<section class="quick-links">
+		  <h2>Quick Access</h2>
+		  <div class="link-cards">
+			<a href="dashboard.html" class="card primary-card" style="text-decoration: none; color: inherit; display: block;">
+			  <span class="card-icon">📚</span>
+			  <h3>Current Class: JHS 3A</h3>
+			  <p>View Roster & Data</p>
+			</a>
+			<a href="studentreport/index.html" class="card academic-card" style="text-decoration: none; color: inherit; display: block;">
+			  <span class="card-icon">📝</span>
+			  <h3>Grade Submission</h3>
+			  <p>Deadline: Nov 15th</p>
+			</a>
+			<button class="card attendance-card" id="quick-link-attendance">
+			  <span class="card-icon">⏱️</span>
+			  <h3>Take Attendance</h3>
+			  <p>Log today's presence/absence</p>
+			</button>
+		  </div>
+		</section>
+
+		<div class="dashboard-grid">
+		  <section class="widget announcements-widget">
+			<h2>📢 School Announcements</h2>
+			<ul id="announcements-list">
+			  <li class="urgent">
+				**URGENT**: Fire Drill tomorrow at 10:00 AM. Review procedures!
+			  </li>
+			  <li>
+				**General**: Report Card Review meeting is postponed to Friday.
+			  </li>
+			  <li>
+				**PD**: Mandatory PD Session materials now available in the Document Library.
+			  </li>
+			</ul>
+			<a href="#" class="view-all-link">View All Announcements →</a>
+		  </section>
+
+		  <section class="widget deadlines-widget">
+			<h2>📅 Key Deadlines & Links</h2>
+			<div class="deadline-item">
+			  <span class="deadline-icon">🚨</span>
+			  **Nov 15:** Final Grade Submission
+			</div>
+			<div class="deadline-item">
+			  <span class="deadline-icon">🗓️</span>
+			  **Nov 29:** Parent-Teacher Conference
+			</div>
+			<div class="deadline-item">
+			  <span class="deadline-icon">📜</span>
+			  <a href="#">Faculty Handbook (2025)</a>
+			</div>
+			<div class="deadline-item">
+			  <span class="deadline-icon">📄</span>
+			  <a href="#">Field Trip Request Form</a>
+			</div>
+		  </section>
+		</div>
+	  </main>
+
+	  <main class="content-area" id="attendance-view" style="display: none;">
+		<h1>Daily Attendance Tracking</h1>
+		<p>Log attendance for your assigned classes. All students are marked Present by default.</p>
+
+		<section class="attendance-controls widget">
+		  <label for="attendance-date">Date:</label>
+		  <input type="date" id="attendance-date" value="" required>
+
+		  <label for="attendance-class">Class:</label>
+		  <select id="attendance-class" required>
+			<option value="">Select a Class</option>
+			<option value="Nursery 1">Nursery 1</option>
+			<option value="Nursery 2">Nursery 2</option>
+			<option value="KG 1">KG 1</option>
+			<option value="KG 2">KG 2</option>
+			<option value="Primary 1">Primary 1</option>
+			<option value="Primary 2">Primary 2</option>
+			<option value="Primary 3">Primary 3</option>
+			<option value="Primary 4">Primary 4</option>
+			<option value="Primary 5">Primary 5</option>
+			<option value="Primary 6">Primary 6</option>
+			<option value="JHS 1">JHS 1</option>
+			<option value="JHS 2">JHS 2</option>
+			<option value="JHS 3" selected>JHS 3</option>
+		  </select>
+
+		  <button id="load-roster-btn" class="primary-btn">Load Roster</button>
+		</section>
+
+		<section class="attendance-list-container widget" id="attendance-container" style="display:none;">
+		  <h2>Attendance Roster for <span id="current-class-display"></span> (<span id="current-date-display"></span>)</h2>
+
+		  <div class="status-summary">
+			<span>Total Students: <strong id="total-students">0</strong></span>
+			<span>Present: <strong id="present-count" style="color: #28a745;">0</strong></span>
+			<span>Absent: <strong id="absent-count" style="color: #dc3545;">0</strong></span>
+			<span>Late: <strong id="late-count" style="color: #ffc107;">0</strong></span>
+		  </div>
+
+		  <table id="attendance-table">
+			<thead>
+			  <tr>
+				<th>#</th>
+				<th>Student Name</th>
+				<th>Attendance Status</th>
+				<th>Notes</th>
+			  </tr>
+			</thead>
+			<tbody>
+			</tbody>
+		  </table>
+
+		  <button id="save-attendance-btn" class="primary-btn save-btn">Save Attendance</button>
+		  <span id="save-status" class="save-status-text"></span>
+		  <div style="clear: both;"></div> </section>
+	  </main>
+
+    </div>
+
+<script>
+// -------------------- Firebase Setup (Combined from staff.js and attendance.html) --------------------
+
+// Existing Student SIS Database
+const firebaseConfigStudents = {
+  apiKey: "AIzaSyAoSRm7DKQB0bTRCKNELxbEVQA7y0hGgT4",
+  authDomain: "school-registration-a9774.firebaseapp.com",
+  databaseURL: "https://school-registration-a9774-default-rtdb.firebaseio.com",
+  projectId: "school-registration-a9774",
+  // ... other configs
+};
+
+// Existing Reports/Gradebook Database (also used for Announcements and Attendance)
+const firebaseConfigReports = {
+  apiKey: "AIzaSyCjW6d-DL_yLZKyfAYT7ahPOfE5jFNWf18",
+  authDomain: "report-155f1.firebaseapp.com",
+  databaseURL: "https://report-155f1-default-rtdb.firebaseio.com",
+  projectId: "report-155f1",
+  // ... other configs
+};
+
+// Initialize Firebase Apps
+const studentsApp = firebase.initializeApp(firebaseConfigStudents, "studentsApp");
+const reportsApp = firebase.initializeApp(firebaseConfigReports, "reportsApp");
+
+const studentsDB = studentsApp.database();
+const reportsDB = reportsApp.database();
+
+// References
+const portalDB = reportsApp.database(); // Used for announcements
+const announcementsRef = portalDB.ref("announcements");
+const attendanceRef = reportsDB.ref("attendance"); // New path for attendance records
+const studentsRef = studentsDB.ref("students");
+
+// -------------------- DOM Elements & Variables (Combined) --------------------
+
+// Attendance DOM elements
+const dateInput = document.getElementById('attendance-date');
+const classSelect = document.getElementById('attendance-class');
+const loadRosterBtn = document.getElementById('load-roster-btn');
+const attendanceContainer = document.getElementById('attendance-container');
+const tableBody = document.querySelector('#attendance-table tbody');
+const saveBtn = document.getElementById('save-attendance-btn');
+const saveStatus = document.getElementById('save-status');
+const dashboardView = document.getElementById('dashboard-view'); // Added to link up navigation
+const attendanceView = document.getElementById('attendance-view'); // Added to link up navigation
+
+
+let currentRoster = {}; // Store student data keyed by student ID (Firebase key)
+let attendanceData = {}; // Store the current attendance status for submission
+
+
+// -------------------- Utility Functions --------------------
+
+// Format date to YYYY-MM-DD
+function formatDate(date) {
+    const d = new Date(date);
+    let month = '' + (d.getMonth() + 1);
+    let day = '' + d.getDate();
+    const year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+
+// Function to update the status counts on the screen
+function updateStatusCounts() {
+    const statuses = { 'Present': 0, 'Absent': 0, 'Late': 0 };
+    let total = 0;
+
+    for (const key in attendanceData) {
+        if (attendanceData[key].status) {
+            statuses[attendanceData[key].status]++;
+            total++;
+        }
+    }
+
+    document.getElementById('total-students').textContent = total;
+    document.getElementById('present-count').textContent = statuses.Present;
+    document.getElementById('absent-count').textContent = statuses.Absent;
+    document.getElementById('late-count').textContent = statuses.Late;
+}
+
+
+// -------------------- Roster Loading & UI Generation --------------------
+
+async function loadRoster() {
+    const selectedClass = classSelect.value;
+    const selectedDate = dateInput.value;
+
+    if (!selectedClass || !selectedDate) {
+        saveStatus.textContent = "Please select a Class and Date to load the roster.";
+        attendanceContainer.style.display = 'none';
+        return;
+    }
+
+    saveStatus.textContent = "Loading...";
+    attendanceContainer.style.display = 'block';
+    
+    // Update header displays
+    document.getElementById('current-class-display').textContent = selectedClass;
+    document.getElementById('current-date-display').textContent = selectedDate;
+
+    // 1. Fetch Students from SIS database for the selected class
+    let studentsSnapshot;
+    try {
+        studentsSnapshot = await studentsRef
+            .orderByChild('classApplying')
+            .equalTo(selectedClass)
+            .once('value');
+    } catch (error) {
+        console.error("Error fetching students:", error);
+        saveStatus.textContent = "Error: Could not load students.";
+        return;
+    }
+
+    currentRoster = studentsSnapshot.val() || {};
+    tableBody.innerHTML = '';
+    attendanceData = {};
+    
+    const studentKeys = Object.keys(currentRoster).sort((a, b) => {
+        // Construct full name for sorting
+        const nameA = (currentRoster[a].firstName || '' + ' ' + currentRoster[a].surname || '').toUpperCase();
+        const nameB = (currentRoster[b].firstName || '' + ' ' + currentRoster[b].surname || '').toUpperCase();
+        return (nameA < nameB) ? -1 : (nameA > nameB) ? 1 : 0;
+    });
+
+    if (studentKeys.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="4">No students found for this class.</td></tr>';
+        saveStatus.textContent = "Roster loaded.";
+        updateStatusCounts();
+        return;
+    }
+
+    // 2. Fetch Existing Attendance Data for the class/date key
+    const attendanceKey = `${selectedDate}_${selectedClass.replace(/\s/g, '-')}`;
+    const existingAttendanceSnapshot = await attendanceRef.child(attendanceKey).once('value');
+    const existingData = existingAttendanceSnapshot.val() || {};
+    
+    // 3. Render Table Rows
+    let counter = 1;
+    studentKeys.forEach(studentKey => {
+        const student = currentRoster[studentKey];
+        const studentName = `${student.firstName || ''} ${student.middleName ? student.middleName + ' ' : ''}${student.surname || ''}`.trim();
+        
+        // Determine initial status: use existing status, otherwise default to Present
+        const initialStatus = existingData.students && existingData.students[studentKey] 
+                            ? existingData.students[studentKey].status : 'Present';
+        const initialNotes = existingData.students && existingData.students[studentKey] 
+                            ? existingData.students[studentKey].notes : '';
+
+        // Initialize internal data tracking
+        attendanceData[studentKey] = {
+            status: initialStatus,
+            notes: initialNotes
+        };
+        
+        const row = tableBody.insertRow();
+        row.dataset.studentKey = studentKey;
+        
+        row.insertCell(0).textContent = counter++;
+        row.insertCell(1).textContent = studentName;
+
+        // Status buttons cell
+        const statusCell = row.insertCell(2);
+        statusCell.classList.add('status-select');
+        
+        const statuses = ['Present', 'Absent', 'Late'];
+        statuses.forEach(status => {
+            const btn = document.createElement('button');
+            btn.classList.add('status-btn', status.toLowerCase());
+            if (status === initialStatus) {
+                btn.classList.add('active');
+            }
+            btn.dataset.status = status;
+            btn.textContent = status;
+            statusCell.appendChild(btn);
+        });
+
+        // Notes cell
+        const notesCell = row.insertCell(3);
+        const notesInput = document.createElement('input');
+        notesInput.type = 'text';
+        notesInput.value = initialNotes;
+        notesInput.placeholder = 'Reason for absence/late arrival';
+        notesCell.appendChild(notesInput);
+    });
+    
+    setupButtonListeners();
+    updateStatusCounts();
+    saveStatus.textContent = existingData.date ? "Attendance loaded. Last saved at: " + existingData.lastSaved : "Roster loaded. Ready to save.";
+}
+
+
+// -------------------- Attendance Event Handlers --------------------
+
+function setupButtonListeners() {
+    // Listener for status button clicks
+    tableBody.querySelectorAll('.status-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const button = e.target;
+            const studentKey = button.closest('tr').dataset.studentKey;
+            const newStatus = button.dataset.status;
+
+            // Update UI
+            button.closest('.status-select').querySelectorAll('.status-btn').forEach(b => b.classList.remove('active'));
+            button.classList.add('active');
+
+            // Update internal data
+            attendanceData[studentKey].status = newStatus;
+            updateStatusCounts();
+            saveStatus.textContent = "Unsaved changes...";
+        });
+    });
+    
+    // Listener for notes input changes
+    tableBody.querySelectorAll('input[type="text"]').forEach(input => {
+        input.addEventListener('input', (e) => {
+            const notesInput = e.target;
+            const studentKey = notesInput.closest('tr').dataset.studentKey;
+            
+            // Update internal data
+            attendanceData[studentKey].notes = notesInput.value.trim();
+            saveStatus.textContent = "Unsaved changes...";
+        });
+    });
+}
+
+async function saveAttendance() {
+    const selectedClass = classSelect.value;
+    const selectedDate = dateInput.value;
+
+    if (!selectedClass || !selectedDate || Object.keys(attendanceData).length === 0) {
+        alert("Please load a roster before attempting to save.");
+        return;
+    }
+
+    saveStatus.textContent = "Saving...";
+    saveBtn.disabled = true;
+
+    const studentsToSave = {};
+    Object.keys(attendanceData).forEach(key => {
+        // Only save students who have a recorded status
+        if (attendanceData[key].status) {
+            // Check if the student key exists in the currentRoster before accessing properties
+            if (currentRoster[key]) {
+                studentsToSave[key] = {
+                    status: attendanceData[key].status,
+                    notes: attendanceData[key].notes,
+                    // Save full name for reporting ease, constructed from student object
+                    name: `${currentRoster[key].firstName || ''} ${currentRoster[key].middleName ? currentRoster[key].middleName + ' ' : ''}${currentRoster[key].surname || ''}`.trim()
+                };
+            }
+        }
+    });
+    
+    // Final data structure for Firebase
+    const attendanceRecord = {
+        date: selectedDate,
+        class: selectedClass,
+        teacherID: "TCHR-105", // Placeholder: replace with actual logged-in teacher ID
+        students: studentsToSave,
+        lastSaved: new Date().toLocaleString()
+    };
+    
+    // Create the unique key for the record
+    const attendanceKey = `${selectedDate}_${selectedClass.replace(/\s/g, '-')}`;
+
+    try {
+        await attendanceRef.child(attendanceKey).set(attendanceRecord);
+        saveStatus.textContent = `Attendance saved successfully on ${attendanceRecord.lastSaved}.`;
+    } catch (error) {
+        console.error("Error saving attendance:", error);
+        saveStatus.textContent = `ERROR: Failed to save attendance. ${error.message}`;
+    } finally {
+        saveBtn.disabled = false;
+    }
+}
+
+
+// -------------------- Dashboard Logic --------------------
+
+function loadAnnouncements() {
+    const announcementsList = document.getElementById('announcements-list');
+    if (!announcementsList) return;
+    
+    // Clear existing dummy content and replace with loading message
+    announcementsList.innerHTML = '<li>Loading announcements...</li>'; 
+
+    // Listen for data changes in the announcements database
+    announcementsRef.limitToLast(3).on('value', (snapshot) => {
+        const data = snapshot.val();
+        const announcements = [];
+
+        announcementsList.innerHTML = ''; // Clear loading message
+
+        if (data) {
+            // Convert object to array and attach key
+            Object.keys(data).forEach(key => {
+                announcements.push({...data[key], key: key});
+            });
+            
+            // Sort by datePosted (descending) - assuming datePosted is a timestamp or comparable string
+            announcements.sort((a, b) => b.datePosted - a.datePosted);
+
+            // Display the top 3
+            const displayedAnnouncements = announcements.slice(0, 3);
+            if (displayedAnnouncements.length > 0) {
+                displayedAnnouncements.forEach(announcement => {
+                    const li = document.createElement('li');
+                    const categoryClass = announcement.category ? announcement.category.toLowerCase().replace(' ', '-') : 'general';
+                    const isUrgent = (announcement.category && announcement.category.toLowerCase() === 'urgent');
+
+                    li.classList.add(categoryClass);
+                    if (isUrgent) {
+                        li.classList.add('urgent'); // Use the specific urgent style
+                    }
+                    
+                    // Display category and title
+                    li.innerHTML = `<strong>${announcement.category || 'General'}:</strong> ${announcement.title}`;
+                    
+                    // Add detail when hovered over
+                    li.title = announcement.message || announcement.title; 
+                    
+                    announcementsList.appendChild(li);
+                });
+            } else {
+                 announcementsList.innerHTML = '<li>No recent announcements.</li>';
+            }
+        } else {
+             announcementsList.innerHTML = '<li>No announcements found.</li>';
+        }
+    }, (error) => {
+        console.error("Error loading announcements:", error);
+        announcementsList.innerHTML = `<li class="urgent">Error loading announcements: ${error.message}</li>`;
+    });
+}
+
+
+// -------------------- Navigation & Routing --------------------
+
+function setupNavigation() {
+    // Get the navigation links from the sidebar and quick access cards
+    const sidebarLinks = document.querySelectorAll('.sidebar .nav-item');
+    const quickLinkAttendance = document.getElementById('quick-link-attendance'); // Get the quick-link button
+    const mainViews = {
+        'link-dashboard': dashboardView,
+        'link-attendance': attendanceView,
+        // Note: link-roster and Grade Entry are standard <a> tags and navigate externally
+    };
+
+    // Function to handle view switching and routing for SPA links
+    const handleNavigation = (targetId) => {
+        
+        // 1. Handle Visual Navigation (Sidebar)
+        sidebarLinks.forEach(l => l.classList.remove('active'));
+        const activeLink = document.getElementById(targetId);
+        
+        // Activate the correct sidebar link
+        if (activeLink) {
+            activeLink.classList.add('active');
+        } else if (targetId === 'quick-link-attendance') {
+            // Navigated from the quick link, activate the sidebar attendance link
+            document.getElementById('link-attendance').classList.add('active');
+        } else if (targetId === 'Dashboard' || targetId === 'link-dashboard') {
+            // Ensure dashboard is active on load or direct click
+            document.getElementById('link-dashboard').classList.add('active');
+        }
+
+        // 2. Handle View Switching (SPA)
+        for (const id in mainViews) {
+            if (mainViews[id]) {
+                const isTargetView = (id === targetId) || (targetId === 'quick-link-attendance' && id === 'link-attendance') || (targetId === 'Dashboard' && id === 'link-dashboard');
+                
+                mainViews[id].style.display = isTargetView ? 'block' : 'none';
+            }
+        }
+    }
+
+    // Add event listeners to sidebar links (only for SPA items)
+    sidebarLinks.forEach(link => {
+        if (mainViews[link.id]) {
+            link.addEventListener('click', () => handleNavigation(link.id));
+        }
+    });
+
+    // Add event listener to Quick Link Attendance button
+    if (quickLinkAttendance) {
+        quickLinkAttendance.addEventListener('click', () => handleNavigation('quick-link-attendance'));
+    }
+    
+    // Set current date on initial load
+    dateInput.value = formatDate(new Date());
+
+    // Add event listener to load roster button
+    loadRosterBtn.addEventListener('click', loadRoster);
+    
+    // Add event listener to save button
+    saveBtn.addEventListener('click', saveAttendance);
+    
+    // Initial display setup (ensure dashboard is shown first)
+    handleNavigation('link-dashboard');
+}
+
+
+function initApp() {
+    // Initialize functionality when the body loads
+    setupNavigation();
+    loadAnnouncements();
+}
+</script>
+
+  </body>
+</html>
+

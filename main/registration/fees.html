@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>St. Joseph Preparatory School - Fees Management</title>
+
+<style>
+    :root {
+      --school-blue: #0d47a1;
+      --school-gold: #f9a825;
+      --background: #f4f7fc;
+      --text-dark: #222;
+      --white: #fff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: var(--background);
+      margin: 0;
+      color: var(--text-dark);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ---------- HEADER ---------- */
+    header {
+      background: var(--school-blue);
+      color: var(--white);
+      text-align: center;
+      padding: 20px 10px;
+      font-size: 22px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      animation: slideDown 0.6s ease;
+    }
+    header span {
+      display: block;
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--school-gold);
+    }
+
+    /* ---------- MAIN CONTAINER ---------- */
+    .container {
+      flex: 1;
+      max-width: 950px;
+      width: 95%;
+      margin: 30px auto;
+      background: var(--white);
+      padding: 30px 20px;
+      border-radius: 12px;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.6s ease;
+      position: relative;
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin-top: 15px;
+      color: var(--text-dark);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      transition: border-color 0.3s ease;
+    }
+    input:focus { border-color: var(--school-blue); outline: none; }
+    input[readonly] { background: #f2f2f2; }
+
+    button {
+      margin-top: 25px;
+      padding: 12px 18px;
+      font-size: 17px;
+      background: var(--school-blue);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.3s ease;
+    }
+    button:hover { background: #08306b; transform: translateY(-2px); }
+
+    /* ---------- SEARCH BOX ---------- */
+    .search-results {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-top: 5px;
+      max-height: 200px;
+      overflow-y: auto;
+      background: var(--white);
+      position: absolute;
+      width: calc(100% - 42px);
+      z-index: 10;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .search-results div {
+      padding: 10px;
+      cursor: pointer;
+    }
+    .search-results div:hover {
+      background: #f0f0f0;
+    }
+
+    /* ---------- TABLE ---------- */
+    table {
+      width: 100%;
+      margin-top: 30px;
+      border-collapse: collapse;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+      font-size: 15px;
+    }
+    th {
+      background: var(--school-blue);
+      color: var(--white);
+      font-weight: 600;
+    }
+    tr:nth-child(even) { background: #f9f9f9; }
+
+    /* ---------- STATS ---------- */
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 15px;
+      margin: 40px auto 25px auto;
+      max-width: 950px;
+      padding: 0 10px;
+    }
+    .stat-card {
+      background: var(--school-blue);
+      color: var(--white);
+      padding: 15px 10px;
+      text-align: center;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: fadeIn 1s ease;
+    }
+    .stat-card:hover { transform: translateY(-5px); box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3); }
+    .stat-card span {
+      display: block;
+      font-size: 22px;
+      font-weight: bold;
+      margin-top: 6px;
+      color: var(--school-gold);
+    }
+
+    /* ---------- FOOTER ---------- */
+    footer {
+      background: var(--school-blue);
+      color: var(--white);
+      text-align: center;
+      padding: 15px;
+      font-size: 14px;
+      font-weight: 400;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* ---------- ANIMATIONS ---------- */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+  </head>
+
+  <body>
+	<header>
+	  St. Joseph Preparatory School
+	  <span>Fees Management System (₵)</span>
+	</header>
+
+	<div class="container">
+	  <label>Search Student</label>
+	  <input type="text" id="studentSearch" placeholder="Type student name..." autocomplete="off" />
+	  <div id="searchResults" class="search-results"></div>
+
+	  <label>Full Name</label>
+	  <input type="text" id="fullName" readonly />
+
+	  <label>Class</label>
+	  <input type="text" id="studentClass" readonly />
+
+	  <label>Total Fees (₵)</label>
+	  <input type="number" id="totalFees" placeholder="Enter total fees" />
+
+	  <label>Amount Paid (₵)</label>
+	  <input type="number" id="amountPaid" placeholder="Enter amount paid" />
+
+	  <label>Balance (₵)</label>
+	  <input type="text" id="balance" readonly />
+
+	  <button id="saveFees">Save Payment</button>
+
+	  <table>
+		<thead>
+		  <tr>
+			<th>Full Name</th>
+			<th>Class</th>
+			<th>Total Fees (₵)</th>
+			<th>Paid (₵)</th>
+			<th>Balance (₵)</th>
+		  </tr>
+		</thead>
+		<tbody id="feesTable">
+		  <tr><td colspan="5">No records yet</td></tr>
+		</tbody>
+	  </table>
+	</div>
+
+	<div class="stats-container">
+	  <div class="stat-card">Students<span id="statStudents">0</span></div>
+	  <div class="stat-card">Expected (₵)<span id="statTotalFees">0.00</span></div>
+	  <div class="stat-card">Paid (₵)<span id="statPaid">0.00</span></div>
+	  <div class="stat-card">Outstanding (₵)<span id="statBalance">0.00</span></div>
+	  <div class="stat-card">Collected (%)<span id="statPercent">0%</span></div>
+	  <div class="stat-card">Classes<span id="statClasses">0</span></div>
+	</div>
+
+	<footer>
+	  © 2025 St. Joseph Preparatory School. All Rights Reserved.
+	</footer>
+
+	<!-- Firebase Libraries -->
+	<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<script>
+    /* ---------- FIREBASE SETUP ---------- */
+    const regConfig = {
+      apiKey: "AIzaSyAoSRm7DKQB0bTRCKNELxbEVQA7y0hGgT4",
+      authDomain: "school-registration-a9774.firebaseapp.com",
+      databaseURL: "https://school-registration-a9774-default-rtdb.firebaseio.com",
+      projectId: "school-registration-a9774",
+      storageBucket: "school-registration-a9774.appspot.com",
+      messagingSenderId: "967547068125",
+      appId: "1:967547068125:web:0a5708c69c84d1bac64534",
+    };
+    const feesConfig = {
+      apiKey: "AIzaSyB7YvmfdctTIJUBPHOyJx0xEeqHqrHp1Vs",
+      authDomain: "fees-5e411.firebaseapp.com",
+      databaseURL: "https://fees-5e411-default-rtdb.firebaseio.com",
+      projectId: "fees-5e411",
+      storageBucket: "fees-5e411.firebasestorage.app",
+      messagingSenderId: "384077620237",
+      appId: "1:384077620237:web:bc8cf32026b795b3f36144",
+    };
+    const regApp = firebase.initializeApp(regConfig, "registration");
+    const feesApp = firebase.initializeApp(feesConfig, "fees");
+    const studentsDB = regApp.database().ref("students");
+    const feesDB = feesApp.database().ref("fees");
+
+    /* ---------- DOM ELEMENTS ---------- */
+    const searchInput = document.getElementById("studentSearch");
+    const searchResults = document.getElementById("searchResults");
+    const fullNameField = document.getElementById("fullName");
+    const classField = document.getElementById("studentClass");
+    const totalFees = document.getElementById("totalFees");
+    const amountPaid = document.getElementById("amountPaid");
+    const balance = document.getElementById("balance");
+    const feesTable = document.getElementById("feesTable");
+    const saveBtn = document.getElementById("saveFees");
+
+    // Stats
+    const statStudents = document.getElementById("statStudents");
+    const statTotalFees = document.getElementById("statTotalFees");
+    const statPaid = document.getElementById("statPaid");
+    const statBalance = document.getElementById("statBalance");
+    const statPercent = document.getElementById("statPercent");
+    const statClasses = document.getElementById("statClasses");
+
+    let studentsList = [];
+
+    /* ---------- LOAD STUDENTS ---------- */
+    studentsDB.on("value", (snapshot) => {
+      const data = snapshot.val();
+      studentsList = [];
+      if (data) {
+        Object.keys(data).forEach((key) => {
+          const s = data[key];
+          studentsList.push({
+            id: key,
+            fullName: `${s.firstName || ""} ${s.middleName || ""} ${s.surname || ""}`.trim(),
+            class: s.classApplying || "N/A",
+          });
+        });
+      }
+    });
+
+    /* ---------- SEARCH ---------- */
+    searchInput.addEventListener("input", () => {
+      const q = searchInput.value.toLowerCase();
+      searchResults.innerHTML = "";
+      if (!q) return;
+
+      const matches = studentsList.filter((s) => s.fullName.toLowerCase().includes(q));
+      matches.forEach((s) => {
+        const div = document.createElement("div");
+        div.textContent = `${s.fullName} (${s.class})`;
+        div.onclick = () => {
+          searchInput.value = s.fullName;
+          fullNameField.value = s.fullName;
+          classField.value = s.class;
+          searchResults.innerHTML = "";
+        };
+        searchResults.appendChild(div);
+      });
+    });
+
+    /* ---------- BALANCE ---------- */
+    function updateBalance() {
+      const total = parseFloat(totalFees.value) || 0;
+      const paid = parseFloat(amountPaid.value) || 0;
+      balance.value = "₵" + (total - paid).toFixed(2);
+    }
+    totalFees.addEventListener("input", updateBalance);
+    amountPaid.addEventListener("input", updateBalance);
+
+    /* ---------- SAVE ---------- */
+    saveBtn.addEventListener("click", () => {
+      const fullName = fullNameField.value.trim();
+      const studentClass = classField.value.trim();
+      const total = parseFloat(totalFees.value) || 0;
+      const paid = parseFloat(amountPaid.value) || 0;
+      const bal = total - paid;
+      if (!fullName) return alert("Please select a student first.");
+
+      const record = {
+        fullName,
+        studentClass,
+        totalFees: total,
+        amountPaid: paid,
+        balance: bal,
+        timestamp: new Date().toISOString(),
+      };
+      feesDB.push(record).then(() => {
+        alert("✅ Fees record saved!");
+        totalFees.value = amountPaid.value = balance.value = "";
+        renderTable();
+      });
+    });
+
+    /* ---------- DISPLAY TABLE ---------- */
+    function renderTable() {
+      feesDB.on("value", (snap) => {
+        const data = snap.val();
+        feesTable.innerHTML = "";
+        if (!data) {
+          feesTable.innerHTML = "<tr><td colspan='5'>No records yet</td></tr>";
+          updateStats(0, 0, 0, 0, 0);
+          return;
+        }
+        const recs = Object.values(data);
+        let totalSum = 0,
+          paidSum = 0,
+          balanceSum = 0;
+        const classSet = new Set();
+
+        recs.forEach((f) => {
+          totalSum += f.totalFees || 0;
+          paidSum += f.amountPaid || 0;
+          balanceSum += f.balance || 0;
+          if (f.studentClass) classSet.add(f.studentClass);
+
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${f.fullName}</td>
+            <td>${f.studentClass}</td>
+            <td>₵${f.totalFees.toFixed(2)}</td>
+            <td>₵${f.amountPaid.toFixed(2)}</td>
+            <td>₵${f.balance.toFixed(2)}</td>`;
+          tr.style.animation = "fadeIn 0.6s ease";
+          feesTable.appendChild(tr);
+        });
+
+        updateStats(recs.length, totalSum, paidSum, balanceSum, classSet.size);
+      });
+    }
+
+    /* ---------- UPDATE STATS ---------- */
+    function updateStats(students, total, paid, balanceAmt, classCount) {
+      const percent = total > 0 ? ((paid / total) * 100).toFixed(1) : 0;
+      statStudents.textContent = students || 0;
+      statTotalFees.textContent = total.toFixed(2);
+      statPaid.textContent = paid.toFixed(2);
+      statBalance.textContent = balanceAmt.toFixed(2);
+      statPercent.textContent = percent + "%";
+      statClasses.textContent = classCount || 0;
+    }
+
+    renderTable();
+</script>
+  </body>
+</html>

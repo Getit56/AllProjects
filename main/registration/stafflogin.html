@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Login - St. Joseph Preparatory School</title>
+	<link rel="stylesheet" href="css/logstyle.css">
+  </head>
+  <body>
+
+	<div class="login-container">
+	  <h1>St. Joseph Preparatory school</h1>
+	  <h2>Login to Continue</h2>
+
+	  <form id="loginForm">
+		<label for="password">Password</label>
+		<input type="password" id="password" placeholder="Enter Password" required>
+
+		<div class="show-password">
+		  <input type="checkbox" id="showPass">
+		  <label for="showPass">Show Password</label>
+		</div>
+
+		<button type="submit">Login</button>
+		<div id="error-message"></div>
+	  </form>
+	</div>
+
+	<script>
+	  const form = document.getElementById('loginForm');
+const errorMessage = document.getElementById('error-message');
+const showPass = document.getElementById('showPass');
+const passwordInput = document.getElementById('password');
+
+// Default password
+const correctPassword = "Rom123@";
+
+// Handle login
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const password = passwordInput.value.trim();
+
+  if (password === correctPassword) {
+    window.location.href = "staff.html";
+  } else {
+    errorMessage.textContent = "❌ Incorrect password. Try again.";
+  }
+});
+
+// Show/hide password
+showPass.addEventListener('change', () => {
+  passwordInput.type = showPass.checked ? "text" : "password";
+});
+</script>
+  </body>
+</html>

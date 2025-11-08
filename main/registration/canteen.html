@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>St. Joseph Prep — Canteen Collection (₵5)</title>
+
+<style>
+:root{
+  --primary:#004d99; --secondary:#f7a01a; --success:#28a745; --danger:#dc3545;
+  --info:#007bff; --bg:#f4f6f9; --muted:#666; --border:#e6e6e6; --card:#fff;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Segoe UI,Roboto,Arial;background:var(--bg);color:#222}
+header{background:var(--primary);color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-weight:700;font-size:1.2rem}
+.main{display:flex;min-height:calc(100vh - 60px)}
+.sidebar{width:240px;background:var(--card);padding-top:12px;border-right:1px solid rgba(0,0,0,0.04)}
+.nav-item{padding:12px 18px;cursor:pointer}
+.nav-item.active{background:var(--primary);color:#fff;border-left:5px solid var(--secondary)}
+.content{flex:1;padding:22px}
+h1{color:var(--primary);margin:0 0 14px 0}
+.widget{background:var(--card);padding:16px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,0.04);border:1px solid var(--border)}
+.controls{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin-bottom:14px}
+.controls .field{display:flex;flex-direction:column}
+label{font-weight:600;font-size:0.9rem;color:var(--muted);margin-bottom:6px}
+input[type=date],select{padding:8px;border-radius:6px;border:1px solid var(--border);min-width:160px}
+.button{background:var(--primary);color:#fff;padding:9px 12px;border:none;border-radius:8px;cursor:pointer}
+.button.secondary{background:#f0f0f0;color:#222;border:1px solid #e0e0e0}
+.table-wrap{overflow:auto;margin-top:10px}
+table{width:100%;border-collapse:collapse;font-size:0.95rem}
+th,td{padding:10px;border-bottom:1px solid #f2f2f2;text-align:left}
+th{background:#fafafa;color:var(--muted);font-weight:700}
+.status-row{display:flex;gap:8px;align-items:center}
+.status-btn{padding:6px 10px;border-radius:8px;border:1px solid var(--border);cursor:pointer;background:#fafafa}
+.status-btn.paid.active{background:var(--success);color:#fff;border-color:var(--success)}
+.status-btn.notpaid.active{background:#fff;color:var(--danger);border:1px dashed var(--danger)}
+.row-saved{color:var(--muted);font-size:0.9rem}
+.class-summary{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.card{background:var(--card);padding:12px;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,0.04);border:1px solid var(--border);min-width:150px;display:flex;flex-direction:column}
+.card h3{margin:0;font-size:1.05rem}
+.card p{margin:6px 0 0 0;color:var(--muted);font-size:0.9rem}
+.footer-summary{margin-top:26px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.footer-card{background:var(--card);padding:14px;border-radius:12px;border-left:8px solid var(--primary);box-shadow:0 6px 18px rgba(0,0,0,0.04)}
+.footer-card.row{display:flex;align-items:center;gap:12px}
+.footer-card h4{margin:0;font-size:1.05rem}
+.footer-card p{margin:6px 0 0 0;color:var(--muted)}
+.accent-paid{border-left-color:var(--success)}
+.accent-notpaid{border-left-color:var(--danger)}
+.accent-total{border-left-color:var(--info)}
+.accent-school{border-left-color:var(--primary)}
+.footer-note{margin-top:8px;color:var(--muted);font-size:0.9rem}
+@media(max-width:900px){
+  .controls{flex-direction:column;align-items:stretch}
+  .sidebar{width:100%;display:flex;overflow:auto}
+  .main{flex-direction:column}
+}
+</style>
+  </head>
+  <body onload="initApp()">
+	<header>
+	  <div class="logo">St. Joseph Prep School</div>
+	  <div>🍽️ Canteen Collection — ₵5</div>
+	</header>
+
+	<div class="main">
+	  <nav class="sidebar">
+		<div class="nav-item active">Canteen</div>
+		<div class="nav-item">Attendance</div>
+		<div class="nav-item">Reports</div>
+	  </nav>
+
+	  <section class="content">
+		<h1>Canteen Collection</h1>
+
+		<div class="widget">
+		  <div class="controls">
+			<div class="field">
+			  <label>Date</label>
+			  <input id="date" type="date" />
+			</div>
+
+			<div class="field">
+			  <label>Class</label>
+			  <select id="classSelect">
+				<option value="">Select class</option>
+				<option>Nursery 1</option><option>Nursery 2</option>
+				<option>KG 1</option><option>KG 2</option>
+				<option>Primary 1</option><option>Primary 2</option>
+				<option>Primary 3</option><option>Primary 4</option>
+				<option>Primary 5</option><option>Primary 6</option>
+				<option>JHS 1</option><option>JHS 2</option>
+				<option selected>JHS 3</option>
+			  </select>
+			</div>
+
+			<div class="field">
+			  <label>&nbsp;</label>
+			  <button id="loadBtn" class="button">Refresh</button>
+			</div>
+		  </div>
+
+		  <div class="class-summary" id="classSummary" style="display:none">
+			<div class="card"><h3 id="classTotalStudents">0</h3><p>Total Students</p></div>
+			<div class="card"><h3 id="classPaidCount">0</h3><p>Paid (₵5 each)</p></div>
+			<div class="card"><h3 id="classNotPaidCount">0</h3><p>Not Paid</p></div>
+			<div class="card"><h3 id="classTotalAmountCard">₵0.00</h3><p>Class Total</p></div>
+		  </div>
+
+		  <div style="margin:10px 0;display:none" id="bulkControls">
+			<button id="markAllPaid" class="button secondary">Mark All Paid</button>
+			<button id="markAllNotPaid" class="button secondary">Mark All Not Paid</button>
+			<button id="saveAll" class="button" style="margin-left:8px">Save All</button>
+			<span id="saveMsg" style="margin-left:12px;color:var(--muted)"></span>
+		  </div>
+
+		  <div class="table-wrap">
+			<table>
+			  <thead><tr><th>#</th><th>Student</th><th>Payment</th><th>Saved?</th></tr></thead>
+			  <tbody id="tbody"><tr><td colspan="4" style="text-align:center;color:var(--muted)">Select class and date</td></tr></tbody>
+			</table>
+		  </div>
+
+		  <div class="footer-summary" id="footerSummary" style="margin-top:22px">
+			<div class="footer-card accent-school row">
+			  <div>🏫</div>
+			  <div><h4 id="schoolTotalRegistered">Total Students: 0</h4><p>Total Registered</p></div>
+			</div>
+			<div class="footer-card accent-paid row">
+			  <div>💰</div>
+			  <div><h4 id="schoolPaidCount">Paid (today): 0</h4><p>All classes</p></div>
+			</div>
+			<div class="footer-card accent-notpaid row">
+			  <div>🚫</div>
+			  <div><h4 id="schoolNotPaidCount">Not Paid (today): 0</h4><p>Remaining</p></div>
+			</div>
+			<div class="footer-card accent-total row">
+			  <div>📊</div>
+			  <div><h4 id="schoolTotalAmount">Total Collected: ₵0.00</h4><p>All Classes</p></div>
+			</div>
+		  </div>
+
+		</div>
+	  </section>
+	</div>
+
+	<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script>
+const STUDENT_CFG={apiKey:"AIzaSyAoSRm7DKQB0bTRCKNELxbEVQA7y0hGgT4",authDomain:"school-registration-a9774.firebaseapp.com",databaseURL:"https://school-registration-a9774-default-rtdb.firebaseio.com"};
+const REPORT_CFG={apiKey:"AIzaSyCjW6d-DL_yLZKyfAYT7ahPOfE5jFNWf18",authDomain:"report-155f1.firebaseapp.com",databaseURL:"https://report-155f1-default-rtdb.firebaseio.com"};
+let studentsDB,reportsDB,roster={},localState={},currentKey='',totalRegistered=0;
+const FIXED_AMOUNT=5;
+
+function initApp(){
+ firebase.initializeApp(STUDENT_CFG,"studentsApp");
+ firebase.initializeApp(REPORT_CFG,"reportsApp");
+ studentsDB=firebase.app("studentsApp").database();
+ reportsDB=firebase.app("reportsApp").database();
+ document.getElementById('date').value=new Date().toISOString().split('T')[0];
+ document.getElementById('loadBtn').onclick=loadRoster;
+ document.getElementById('markAllPaid').onclick=()=>bulkMark('Paid');
+ document.getElementById('markAllNotPaid').onclick=()=>bulkMark('Not Paid');
+ document.getElementById('saveAll').onclick=saveAll;
+ studentsDB.ref('students').once('value').then(s=>{totalRegistered=Object.keys(s.val()||{}).length;updateSchoolTotals();});
+ document.getElementById('classSelect').addEventListener('change',()=>loadRoster());
+ document.getElementById('date').addEventListener('change',()=>{loadRoster();updateSchoolTotals();});
+ updateSchoolTotals();
+}
+function makeKey(d,c){return d.replace(/\s/g,'')+'_'+c.replace(/\s/g,'-');}
+async function loadRoster(){
+ const date=document.getElementById('date').value;
+ const cls=document.getElementById('classSelect').value;
+ if(!date||!cls)return;
+ document.getElementById('saveMsg').textContent='Loading...';
+ currentKey=makeKey(date,cls);
+ const snap=await studentsDB.ref('students').orderByChild('classApplying').equalTo(cls).once('value');
+ roster=snap.val()||{};
+ const existSnap=await reportsDB.ref('canteen/'+currentKey).once('value');
+ const existing=existSnap.val()||{};
+ const tbody=document.getElementById('tbody');
+ tbody.innerHTML='';
+ localState={};
+ const ids=Object.keys(roster);
+ if(ids.length===0){tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--muted)">No students found.</td></tr>';updateClassSummary();return;}
+ ids.sort((a,b)=>{
+  const A=((roster[a].firstName||'')+(roster[a].surname||'')).toUpperCase();
+  const B=((roster[b].firstName||'')+(roster[b].surname||'')).toUpperCase();
+  return A<B?-1:A>B?1:0;
+ });
+ let i=1;
+ ids.forEach(id=>{
+  const s=roster[id];
+  const name=`${s.firstName||''} ${s.middleName? s.middleName+' ':''}${s.surname||''}`.trim();
+  const entry=existing[id]||{};
+  const st=entry.status||'Not Paid';
+  localState[id]={status:st};
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td>${i++}</td><td>${name}</td>
+  <td><div class="status-row">
+  <button class="status-btn paid ${st==='Paid'?'active':''}" data-id="${id}" data-st="Paid">Paid</button>
+  <button class="status-btn notpaid ${st==='Not Paid'?'active':''}" data-id="${id}" data-st="Not Paid">Not Paid</button>
+  </div></td><td><span id="saved-${id}" class="row-saved">${entry.timestamp?'Saved':''}</span></td>`;
+  tbody.appendChild(tr);
+ });
+ document.querySelectorAll('.status-btn').forEach(b=>b.onclick=e=>{
+  const id=e.target.dataset.id,st=e.target.dataset.st;
+  localState[id].status=st;
+  const row=e.target.closest('tr');
+  row.querySelectorAll('.status-btn').forEach(x=>x.classList.remove('active'));
+  e.target.classList.add('active');
+  updateClassSummary();
+ });
+ document.getElementById('bulkControls').style.display='block';
+ document.getElementById('classSummary').style.display='flex';
+ updateClassSummary();
+ document.getElementById('saveMsg').textContent='Loaded ✓';
+}
+function bulkMark(st){for(const id in localState)localState[id].status=st;
+ document.querySelectorAll('.status-btn').forEach(b=>{
+  b.classList.remove('active');
+  if(b.dataset.st===st)b.classList.add('active');
+ });
+ updateClassSummary();}
+function updateClassSummary(){
+ const ids=Object.keys(localState);
+ const total=ids.length;
+ let paid=0;ids.forEach(i=>{if(localState[i].status==='Paid')paid++;});
+ const not=total-paid;
+ const totalAmt=paid*FIXED_AMOUNT;
+ document.getElementById('classTotalStudents').textContent=total;
+ document.getElementById('classPaidCount').textContent=paid;
+ document.getElementById('classNotPaidCount').textContent=not;
+ document.getElementById('classTotalAmountCard').textContent='₵'+totalAmt.toFixed(2);
+}
+async function saveAll(){
+ if(!currentKey)return;
+ const cls=document.getElementById('classSelect').value;
+ const promises=[];
+ for(const id in localState){
+  const s=roster[id];
+  const p={name:`${s.firstName||''} ${s.middleName? s.middleName+' ':''}${s.surname||''}`.trim(),class:cls,status:localState[id].status,amount:localState[id].status==='Paid'?FIXED_AMOUNT:0,timestamp:Date.now()};
+  promises.push(reportsDB.ref('canteen/'+currentKey+'/'+id).set(p));
+ }
+ await Promise.all(promises);
+ document.getElementById('saveMsg').textContent='Saved ✓';
+ updateSchoolTotals();
+ setTimeout(()=>document.getElementById('saveMsg').textContent='',2000);
+}
+function updateSchoolTotals(){
+ const date=document.getElementById('date').value;
+ reportsDB.ref('canteen').once('value').then(s=>{
+  const all=s.val()||{};
+  const prefix=date+'_';
+  let paid=0;
+  for(const k in all){if(k.startsWith(prefix)){for(const sid in all[k])if(all[k][sid].status==='Paid')paid++;}}
+  const not=totalRegistered-paid;
+  const amt=paid*FIXED_AMOUNT;
+  document.getElementById('schoolTotalRegistered').textContent='Total Students: '+totalRegistered;
+  document.getElementById('schoolPaidCount').textContent='Paid (today): '+paid;
+  document.getElementById('schoolNotPaidCount').textContent='Not Paid (today): '+not;
+  document.getElementById('schoolTotalAmount').textContent='Total Collected: ₵'+amt.toFixed(2);
+ });
+}
+</script>
+  </body>
+</html>

@@ -1,0 +1,326 @@
+/* =========================================================
+ST. JOSEPH PREPARATORY SCHOOL
+DASHBOARD THEME - BLUE & GOLD
+Fullscreen, Fixed Header, Android-Compatible
+========================================================= */
+
+/* ---------- ROOT VARIABLES ---------- */
+:root {
+    --school-blue: #0d47a1;
+    --school-gold: #f9a825;
+    --text-dark: #222;
+    --text-light: #fff;
+    --background-light: #f7f9fc;
+    --card-bg: #fff;
+    --border-color: #dcdcdc;
+}
+
+/* ---------- RESET AND GLOBAL ---------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--background-light);
+    color: var(--text-dark);
+    font-family: "Segoe UI", Roboto, sans-serif;
+    overflow-x: hidden;
+}
+
+/* ---------- HEADER ---------- */
+.top-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: var(--school-blue);
+    color: var(--text-light);
+    text-align: center;
+    padding: 1.2rem 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    z-index: 1000;
+}
+
+.top-header h1 {
+    font-size: 1.6rem;
+    margin-bottom: 0.25rem;
+}
+
+.top-header p {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+/* ---------- MAIN CONTAINER ---------- */
+.dashboard-container {
+    flex: 1;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 8rem 1rem 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+/* ---------- STATISTICS SECTION ---------- */
+.statistics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--card-bg);
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    text-align: center;
+    border-top: 4px solid var(--school-blue);
+    transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+}
+
+.stat-card h3 {
+    font-size: 1rem;
+    color: var(--school-blue);
+}
+
+.stat-card p {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: var(--text-dark);
+}
+
+/* ---------- FILTER SECTION ---------- */
+.filters {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.filters h2 {
+    color: var(--school-blue);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid var(--school-gold);
+    padding-left: 0.5rem;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.8rem;
+}
+
+.filter-grid input,
+.filter-grid select {
+    width: 100%;
+    padding: 0.6rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    font-size: 0.95rem;
+    background-color: #fff;
+    color: var(--text-dark);
+}
+
+.filter-grid button {
+    background: var(--school-blue);
+    color: var(--text-light);
+    border: none;
+    border-radius: 6px;
+    padding: 0.6rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.filter-grid button:hover {
+    background: var(--school-gold);
+    color: var(--text-dark);
+    transform: scale(1.02);
+}
+
+/* ---------- TABLE SECTION ---------- */
+.table-container {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+}
+
+.table-container h2 {
+    color: var(--school-blue);
+    font-size: 1.1rem;
+    margin-bottom: 0.8rem;
+    border-left: 4px solid var(--school-gold);
+    padding-left: 0.5rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1200px;
+}
+
+thead {
+    background: var(--school-blue);
+    color: var(--text-light);
+}
+
+thead th {
+    padding: 0.7rem;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+tbody tr {
+    border-bottom: 1px solid var(--border-color);
+    transition: background 0.2s ease;
+}
+
+tbody tr[data-editing="true"] {
+    background-color: #e3f2fd;
+    outline: 2px solid var(--school-blue);
+}
+
+tbody tr:hover {
+    background-color: rgba(13, 71, 161, 0.08);
+}
+
+tbody td {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    vertical-align: top;
+}
+
+/* ---------- EDIT MODE INPUTS ---------- */
+tbody td input[type="text"],
+tbody td input[type="tel"],
+tbody td input[type="date"],
+tbody td select,
+tbody td textarea {
+    width: 100%;
+    min-width: 120px;  /* ensures wide fields */
+    padding: 0.4rem;
+    margin-bottom: 5px;
+    border: 1px solid var(--school-blue);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-family: inherit;
+}
+
+tbody td label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: #555;
+    margin-top: 5px;
+}
+
+/* Remove top margin for first child */
+tbody td input:first-child,
+tbody td select:first-child,
+tbody td textarea:first-child,
+tbody td label:first-child + input,
+tbody td label:first-child + select {
+    margin-top: 0;
+}
+
+tbody td label:first-child {
+    margin-top: 0;
+}
+
+/* ---------- ACTION BUTTONS ---------- */
+.edit-btn {
+    background: var(--school-gold);
+    color: var(--text-dark);
+    border: none;
+    padding: 0.4rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: background 0.2s ease;
+}
+
+.edit-btn:hover { background: #e69100; }
+
+.save-btn {
+    background: #4CAF50;
+    color: var(--text-light);
+    border: none;
+    padding: 0.4rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: background 0.2s ease;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.save-btn:hover { background: #45a049; }
+
+.cancel-btn {
+    background: #f44336;
+    color: var(--text-light);
+    border: none;
+    padding: 0.4rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: background 0.2s ease;
+}
+
+.cancel-btn:hover { background: #da190b; }
+
+/* ---------- FOOTER ---------- */
+.footer {
+    background: var(--school-blue);
+    color: var(--text-light);
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.9rem;
+    margin-top: auto;
+    width: 100%;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+    z-index: 999;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+    .top-header h1 { font-size: 1.3rem; }
+    .dashboard-container { padding-top: 7rem; }
+    thead th, tbody td { font-size: 0.8rem; }
+    .stat-card p { font-size: 1.2rem; }
+    .filter-grid { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+
+    /* Make edit fields very wide on mobile */
+    tbody td input[type="text"],
+    tbody td input[type="tel"],
+    tbody td input[type="date"],
+    tbody td select,
+    tbody td textarea {
+        min-width: 150px;
+    }
+}

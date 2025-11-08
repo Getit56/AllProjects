@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>St. Joseph Preparatory School - Report Card</title>
+	<link rel="stylesheet" href="css/report.css">
+<style>
+  /* Increase font size in table inputs */
+  .results-table input {
+	font-size: 1rem;
+	padding: 4px 6px;
+	width: 90%;
+	text-align: center;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+  }
+  .results-table input[readonly] {
+	background-color: #f5f5f5;
+  }
+  /* Fees inputs styling */
+  input[type="number"] {
+	font-size: 1rem;
+	padding: 4px 6px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+  }
+</style>
+  </head>
+  <body>
+
+	<!-- ===== SCHOOL HEADER ===== -->
+	<header class="school-header">
+	  <h1 class="school-name">ST. JOSEPH PREPARATORY SCHOOL - </h1>
+	  <h2 class="report-title">STUDENT REPORT CARD-2024/2025-1st Term</h2>
+	</header>
+
+	<!-- ===== STUDENT INFORMATION GRID ===== -->
+	<!-- ===== STUDENT INFORMATION GRID ===== -->
+	<!-- ===== STUDENT INFORMATION GRID ===== -->
+	<section class="student-info-grid">
+	  <h3 class="section-title">Student Information</h3>
+	  <div class="grid-row-horizontal">
+		<!-- Name field -->
+		<div class="grid-field name-field">
+		  <label for="studentName">Student Name:</label>
+		  <input type="text" id="studentName" placeholder="Enter name">
+		</div>
+
+		<!-- Class field -->
+		<div class="grid-field class-field">
+		  <label for="studentClass">Class:</label>
+		  <input type="text" id="studentClass" placeholder="Enter class">
+		</div>
+
+		<!-- Attendance field -->
+		<div class="grid-field attendance-field">
+		  <label>Attendance:</label>
+		  <div class="attendance-wrapper">
+			<input type="number" id="attendance" placeholder="0" min="0">
+			<span>out of</span>
+			<input type="number" id="attendanceTotal" placeholder="0" min="0">
+		  </div>
+		</div>
+	  </div>
+	</section>
+
+	<!-- ===== TERM DATES & POSITIONS ===== -->
+	<section class="term-dates-positions-grid">
+	  <div class="grid-row">
+		<div class="grid-field">
+		  <h3>Term Dates</h3>
+		  <label for="vacationDate">Vacation Date:</label>
+		  <input type="date" id="vacationDate">
+		  <label for="nextTermDate">Next Term Begins:</label>
+		  <input type="date" id="nextTermDate">
+		</div>
+		<div class="grid-field">
+		  <h3>Positions</h3>
+		  <label for="positionInClass">Position in Class:</label>
+		  <input type="text" id="positionInClass" placeholder="3rd" readonly>
+		  <label for="overallPosition">Overall Position:</label>
+		  <input type="text" id="overallPosition" placeholder="10th" readonly>
+		</div>
+	  </div>
+	</section>
+
+	<!-- ===== RESULTS TABLE ===== -->
+	<section class="results-section">
+	  <h3 class="section-title">Academic Performance</h3>
+	  <div class="table-container">
+		<table class="results-table">
+		  <thead>
+			<tr>
+			  <th>Subject</th>
+			  <th>Class Score (50)</th>
+			  <th>Exam Score (50)</th>
+			  <th>Total (100)</th>
+			  <th>Grade</th>
+			  <th>Position</th>
+			  <th>Remarks</th>
+			</tr>
+		  </thead>
+		  <tbody>
+			<tr>
+			  <td>English</td>
+			  <td><input type="number" min="0" max="50"></td>
+			  <td><input type="number" min="0" max="50"></td>
+			  <td><input type="number" min="0" max="100" readonly></td>
+			  <td><input type="text" readonly></td>
+			  <td><input type="text" readonly></td>
+			  <td><input type="text" readonly></td>
+			</tr>
+			<tr>
+			  <td>Mathematics</td>
+			  <td><input type="number" min="0" max="50"></td>
+			  <td><input type="number" min="0" max="50"></td>
+			  <td><input type="number" min="0" max="100" readonly></td>
+			  <td><input type="text" readonly></td>
+			  <td><input type="text" readonly></td>
+			  <td><input type="text" readonly></td>
+			</tr>
+			<tr>
+			  <td>R.M.E</td>
+			  <td><input type="number" min="0" max="50"></td>
+			  <td><input type="number" min="0" max="50"></td>
+			  <td><input type="number" min="0" max="100" readonly></td>
+			  <td><input type="text" readonly></td>
+			  <td><input type="text" readonly></td>
+			  <td><input type="text" readonly></td>
+			</tr>
+			<tr>
+			  <td>Science</td>
+			  <td><input type="number" min="0" max="50"></td>
+			  <td><input type="number" min="0" max="50"></td>
+			  <td><input type="number" min="0" max="100" readonly></td>
+			  <td><input type="text" readonly></td>
+			  <td><input type="text" readonly></td>
+			  <td><input type="text" readonly></td>
+			</tr>
+			<tr>
+			  <td>Computing</td>
+			  <td><input type="number" min="0" max="50"></td>
+			  <td><input type="number" min="0" max="50"></td>
+			  <td><input type="number" min="0" max="100" readonly></td>
+			  <td><input type="text" readonly></td>
+			  <td><input type="text" readonly></td>
+			  <td><input type="text" readonly></td>
+			</tr>
+			<tr>
+			  <td>History</td>
+			  <td><input type="number" min="0" max="50"></td>
+			  <td><input type="number" min="0" max="50"></td>
+			  <td><input type="number" min="0" max="100" readonly></td>
+			  <td><input type="text" readonly></td>
+			  <td><input type="text" readonly></td>
+			  <td><input type="text" readonly></td>
+			</tr>
+			<tr>
+			  <td>Creative Arts</td>
+			  <td><input type="number" min="0" max="50"></td>
+			  <td><input type="number" min="0" max="50"></td>
+			  <td><input type="number" min="0" max="100" readonly></td>
+			  <td><input type="text" readonly></td>
+			  <td><input type="text" readonly></td>
+			  <td><input type="text" readonly></td>
+			</tr>
+			<tr>
+			  <td>Ghanaian Language</td>
+			  <td><input type="number" min="0" max="50"></td>
+			  <td><input type="number" min="0" max="50"></td>
+			  <td><input type="number" min="0" max="100" readonly></td>
+			  <td><input type="text" readonly></td>
+			  <td><input type="text" readonly></td>
+			  <td><input type="text" readonly></td>
+			</tr>
+			<tr class="summary-row">
+			  <td><strong>Total / Average</strong></td>
+			  <td><input type="number" readonly></td>
+			  <td><input type="number" readonly></td>
+			  <td><input type="number" readonly></td>
+			  <td><input type="text" readonly></td>
+			  <td><input type="text" readonly></td>
+			  <td><input type="text" readonly></td>
+			</tr>
+		  </tbody>
+		</table>
+	  </div>
+	</section>
+
+	<!-- ===== CLOSING SECTION ===== -->
+	<section class="closing-section-grid">
+	  <div class="grid-row">
+		<div class="grid-field">
+		  <h3>School Fees</h3>
+		  <label for="feesPaid">Fees Paid:</label>
+		  <input type="number" id="feesPaid" placeholder="GHS --" min="0" step="0.01">
+
+		  <label for="ptaFees">P.T.A Fees:</label>
+		  <input type="number" id="ptaFees" placeholder="GHS --" min="0" step="0.01">
+
+		  <label for="outstandingBalance">Outstanding Balance:</label>
+		  <input type="number" id="outstandingBalance" placeholder="GHS --" min="0" step="0.01">
+
+		  <label for="nextSemesterFees">Next Semester Fees:</label>
+		  <input type="number" id="nextSemesterFees" placeholder="GHS --" min="0" step="0.01">
+		</div>
+		<div class="grid-field">
+		  <h3>Remarks & Signatures</h3>
+		  <label for="teacherRemarks">Teacher's Remarks:</label>
+		  <input type="text" id="teacherRemarks" placeholder="HIGH AVERAGE / VERY GOOD">
+		  <label for="conduct">Conduct:</label>
+		  <input type="text" id="conduct" placeholder="Enter conduct">
+		  <label for="interest">Interest:</label>
+		  <input type="text" id="interest" placeholder="Student's interest">
+		  <div class="signatures">
+			<div>
+			  <span>Teacher's Signature:</span>
+			  <div class="sign-line"></div>
+			</div>
+			<div>
+			  <span>Headmaster's Signature:</span>
+			  <div class="sign-line"></div>
+			</div>
+		  </div>
+		</div>
+	  </div>
+	</section>
+
+	
+	<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+	<script src="js/report.js"></script>
+	
+	
+  </body>
+  
+</html>

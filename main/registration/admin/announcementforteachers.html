@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Send Announcement - St. Joseph Preparatory School</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --blue:#0d47a1;
+  --gold:#f9a825;
+  --light:#f5f9ff;
+  --card:#ffffff;
+  --muted:#666;
+  --success:#2e7d32;
+  --danger:#c62828;
+  --info:#1565c0;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:Inter,system-ui,Segoe UI,Roboto;
+  background:linear-gradient(180deg,var(--light),#fff);
+  color:#222;
+}
+header{
+  background:linear-gradient(90deg,var(--blue),#144ea4);
+  color:#fff;
+  padding:20px;
+  text-align:center;
+  box-shadow:0 6px 18px rgba(13,47,102,0.18);
+}
+header h1{margin:0;font-size:1.25rem;font-weight:700;}
+main{max-width:900px;margin:26px auto;padding:0 16px 80px;}
+.teacher-card {
+  background: var(--card);
+  border-radius:16px;
+  padding:20px 24px;
+  margin-bottom:20px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.05);
+  border:1px solid rgba(13,71,161,0.06);
+  display:flex;
+  flex-direction:column;
+  transition: transform .25s ease, box-shadow .25s ease;
+  position: relative;
+}
+.teacher-card:hover {
+  transform: translateY(-3px);
+  box-shadow:0 12px 24px rgba(0,0,0,0.08);
+}
+.card-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:12px;
+}
+.card-head h3{
+  margin:0;
+  color:var(--blue);
+  font-size:1.15rem;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.pill{
+  padding:6px 12px;
+  border-radius:20px;
+  font-weight:600;
+  font-size:0.88rem;
+  background:#e0e0e0;
+  color:#333;
+}
+.card-body{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  align-items:center;
+}
+.row label{
+  flex:0 0 120px;
+  font-weight:600;
+}
+.row select, .row span{
+  flex:1;
+  padding:6px 10px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+.row span{
+  background:#f5f5f5;
+  padding:6px 10px;
+  border-radius:8px;
+}
+.call-btn {
+  margin-top:12px;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:8px 14px;
+  background: var(--success);
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+  text-decoration:none;
+  width:max-content;
+}
+.call-btn:hover { filter:brightness(1.1); }
+.select-all-container{
+  margin-bottom:16px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-weight:600;
+}
+textarea{
+  width:100%;padding:12px;border-radius:12px;border:1px solid #ccc;
+  resize:none;font-family:Inter;font-size:1rem;margin:16px 0;
+}
+.send-btn{
+  background:var(--blue);color:#fff;font-weight:700;padding:12px 20px;
+  border:none;border-radius:10px;cursor:pointer;font-size:1rem;
+}
+.send-btn:hover{filter:brightness(1.05);}
+.loading-overlay{
+  position: fixed;inset:0;background:rgba(0,0,0,0.6);
+  display:flex;justify-content:center;align-items:center;
+  z-index:999;backdrop-filter:blur(4px);
+}
+.spinner{
+  border:5px solid rgba(255,255,255,0.3);
+  border-top:5px solid var(--gold);
+  border-radius:50%;
+  width:60px;height:60px;
+  animation:spin 1s linear infinite;
+}
+@keyframes spin{100%{transform:rotate(360deg)}}
+.status-msg{
+  position: fixed;left:50%;top:20%;transform:translateX(-50%);
+  padding:16px 28px;border-radius:14px;color:#fff;font-weight:700;
+  font-size:1rem;box-shadow:0 4px 18px rgba(0,0,0,0.25);z-index:1000;
+  opacity:0;animation:fadeInOut 3s ease forwards;
+}
+.status-msg.success{background:var(--success);}
+.status-msg.error{background:var(--danger);}
+@keyframes fadeInOut{
+  0%{opacity:0;transform:translate(-50%, -20px);}
+  10%{opacity:1;transform:translate(-50%, 0);}
+  90%{opacity:1;}
+  100%{opacity:0;transform:translate(-50%, -20px);}
+}
+footer{text-align:center;color:var(--muted);padding:20px 0;border-top:1px solid #ddd;font-size:0.9rem;}
+</style>
+  </head>
+  <body>
+	<header>
+	  <h1>Send Announcement to Approved Teachers</h1>
+	</header>
+
+	<main>
+	  <div class="select-all-container">
+		<input type="checkbox" id="selectAll"> <label for="selectAll">Select All Teachers</label>
+	  </div>
+	  <div id="teachersContainer"></div>
+	  <textarea id="announcement" rows="4" placeholder="Type your announcement here..."></textarea>
+	  <button class="send-btn" id="sendBtn"><i class="fas fa-paper-plane"></i> Send Announcement</button>
+	</main>
+
+	<footer>© 2025 St. Joseph Preparatory School — All Rights Reserved</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAoSRm7DKQB0bTRCKNELxbEVQA7y0hGgT4",
+  authDomain: "school-registration-a9774.firebaseapp.com",
+  databaseURL: "https://school-registration-a9774-default-rtdb.firebaseio.com",
+  projectId: "school-registration-a9774",
+  storageBucket: "school-registration-a9774.firebasestorage.app",
+  messagingSenderId: "967547068125",
+  appId: "1:967547068125:web:0a5708c69c84d1bac64534"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const HUBTEL_BASE = "https://smsc.hubtel.com/v1/messages/send";
+const HUBTEL_CLIENT_ID = "jnhvrhia";
+const HUBTEL_CLIENT_SECRET = "vcbxefjc";
+const SENDER_ID = "StJosephPrep";
+
+function formatPhone(raw){
+  if(!raw) return "";
+  let s = raw.toString().trim();
+  if(s.startsWith("+")) s = s.slice(1);
+  if(s.startsWith("0")) s = "233"+s.slice(1);
+  return s;
+}
+function sendSMSHubtel(phone,message){
+  const to=encodeURIComponent(formatPhone(phone));
+  const content=encodeURIComponent(message);
+  const url=`${HUBTEL_BASE}?clientsecret=${HUBTEL_CLIENT_SECRET}&clientid=${HUBTEL_CLIENT_ID}&from=${SENDER_ID}&to=${to}&content=${content}`;
+  return fetch(url).then(r=>r.text()).catch(console.error);
+}
+function showStatus(msg,type="success"){
+  const el=document.createElement("div");
+  el.className=`status-msg ${type}`;
+  el.textContent=msg;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),3000);
+}
+
+const teachersContainer=document.getElementById("teachersContainer");
+const selectAllCheckbox=document.getElementById("selectAll");
+
+onValue(ref(db,"teachers"),snapshot=>{
+  teachersContainer.innerHTML="";
+  snapshot.forEach(child=>{
+    const data=child.val();
+    const id=child.key;
+    if((data.status||"").toLowerCase()==="approved"){
+      const card=document.createElement("div");
+      card.className="teacher-card";
+      card.innerHTML=`
+        <div class="card-head">
+          <h3>🎉 ${data.fullName || "Unnamed"}</h3>
+          <input type="checkbox" class="select-teacher" data-id="${id}">
+        </div>
+        <div class="card-body">
+          <div class="row"><label>Specialization:</label> <span>${data.subjectSpecialization || "—"}</span></div>
+          <div class="row"><label>Class Assignment:</label> 
+            <select data-id="${id}" class="class-select">
+              <option value="">Select Class</option>
+              <option value="Nursery">Nursery</option>
+              <option value="KG1">KG1</option>
+              <option value="KG2">KG2</option>
+              <option value="Primary 1">Primary 1</option>
+              <option value="Primary 2">Primary 2</option>
+              <option value="Primary 3">Primary 3</option>
+              <option value="Primary 4">Primary 4</option>
+              <option value="Primary 5">Primary 5</option>
+              <option value="Primary 6">Primary 6</option>
+              <option value="JHS1">JHS1</option>
+              <option value="JHS2">JHS2</option>
+              <option value="JHS3">JHS3</option>
+            </select>
+          </div>
+          <a class="call-btn" href="tel:${formatPhone(data.phoneNumber)}"><i class="fas fa-phone-alt"></i> Call Teacher</a>
+        </div>
+      `;
+      teachersContainer.appendChild(card);
+    }
+  });
+});
+
+selectAllCheckbox.addEventListener("change",()=>{
+  const checkboxes=document.querySelectorAll(".select-teacher");
+  checkboxes.forEach(cb=>cb.checked=selectAllCheckbox.checked);
+});
+
+teachersContainer.addEventListener("change",async e=>{
+  if(e.target.classList.contains("class-select")){
+    const id=e.target.dataset.id;
+    const value=e.target.value;
+    if(id && value){
+      await update(ref(db,"teachers/"+id),{classLevel:value});
+      showStatus(`Class assigned to ${value}`);
+    }
+  }
+});
+
+document.getElementById("sendBtn").addEventListener("click",async ()=>{
+  const message=document.getElementById("announcement").value.trim();
+  if(!message){ showStatus("Please type a message","error"); return; }
+
+  const selectedCheckboxes=document.querySelectorAll(".select-teacher:checked");
+  if(selectedCheckboxes.length===0){ showStatus("Select at least one teacher","error"); return; }
+
+  const overlay=document.createElement("div");
+  overlay.className="loading-overlay";
+  overlay.innerHTML='<div class="spinner"></div>';
+  document.body.appendChild(overlay);
+
+  for(const cb of selectedCheckboxes){
+    const id=cb.dataset.id;
+    const phone=document.querySelector(`.class-select[data-id="${id}"]`).closest(".teacher-card").querySelector(".call-btn").href.replace("tel:","");
+    await sendSMSHubtel(phone,message);
+  }
+  overlay.remove();
+  showStatus(`Announcement sent to ${selectedCheckboxes.length} teacher(s)`);
+  document.getElementById("announcement").value="";
+});
+</script>
+  </body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Approved Teachers - St. Joseph Preparatory School Pokukrom</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+<style>
+      :root {
+        --blue: #0d47a1;
+        --light: #f5f9ff;
+        --card: #ffffff;
+        --muted: #666;
+        --success: #2e7d32;
+        --danger: #d32f2f;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, Segoe UI, Roboto;
+        background: linear-gradient(180deg, var(--light), #fff);
+        color: #222;
+      }
+      header {
+        background: linear-gradient(90deg, var(--blue), #144ea4);
+        color: #fff;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 6px 18px rgba(13, 47, 102, 0.18);
+      }
+      header h1 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
+      main {
+        max-width: 900px;
+        margin: 26px auto;
+        padding: 0 16px 80px;
+      }
+      .teacher-card {
+        background: var(--card);
+        border-radius: 16px;
+        padding: 20px 24px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(13, 71, 161, 0.06);
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+      }
+      .teacher-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+      }
+      .teacher-card h3 {
+        margin: 0 0 8px 0;
+        color: var(--blue);
+        font-size: 1.15rem;
+        font-weight: 700;
+      }
+      .info {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        font-size: 0.95rem;
+        color: #333;
+      }
+      .info div {
+        flex: 1 1 200px;
+      }
+      .class-select {
+        padding: 6px 10px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 0.95rem;
+        width: 100%;
+      }
+      .btn-group {
+        margin-top: 12px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .call-btn, .delete-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 14px;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .call-btn {
+        background: var(--success);
+      }
+      .call-btn:hover {
+        filter: brightness(1.1);
+      }
+      .delete-btn {
+        background: var(--danger);
+      }
+      .delete-btn:hover {
+        filter: brightness(1.1);
+      }
+      .empty {
+        text-align: center;
+        color: var(--muted);
+        padding: 40px 12px;
+      }
+      footer {
+        text-align: center;
+        color: var(--muted);
+        padding: 20px 0;
+        border-top: 1px solid #ddd;
+        font-size: 0.9rem;
+      }
+      @media (max-width: 600px) {
+        .teacher-card {
+          padding: 16px;
+        }
+        .info div {
+          flex: 1 1 100%;
+        }
+        header h1 {
+          font-size: 1rem;
+        }
+      }
+</style>
+  </head>
+  <body>
+    <header>
+      <h1>Approved Teachers — St. Joseph Preparatory School Pokukrom</h1>
+    </header>
+
+    <main>
+      <div id="teachersContainer"></div>
+      <div id="emptyMessage" class="empty" style="display:none">
+        No approved teachers found.
+      </div>
+    </main>
+
+    <footer>
+      © 2025 St. Joseph Preparatory School — All Rights Reserved
+    </footer>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import {
+    getDatabase,
+    ref,
+    onValue,
+    update,
+    remove
+  } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAoSRm7DKQB0bTRCKNELxbEVQA7y0hGgT4",
+    authDomain: "school-registration-a9774.firebaseapp.com",
+    databaseURL: "https://school-registration-a9774-default-rtdb.firebaseio.com",
+    projectId: "school-registration-a9774",
+    storageBucket: "school-registration-a9774.firebasestorage.app",
+    messagingSenderId: "967547068125",
+    appId: "1:967547068125:web:0a5708c69c84d1bac64534",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const teachersRef = ref(db, "teachers");
+
+  const container = document.getElementById("teachersContainer");
+  const emptyMsg = document.getElementById("emptyMessage");
+
+  function formatPhone(raw) {
+    if (!raw) return "";
+    let s = raw.toString().trim();
+    if (s.startsWith("+")) s = s.slice(1);
+    if (s.startsWith("0")) s = "233" + s.slice(1);
+    return s;
+  }
+
+  const classOptions = [
+    "Nursery 1","Nursery 2","KG 1","KG 2",
+    "Class 1","Class 2","Class 3","Class 4","Class 5","Class 6",
+    "JHS 1","JHS 2","JHS 3",
+  ];
+
+  onValue(teachersRef, (snapshot) => {
+    container.innerHTML = "";
+    let hasApproved = false;
+
+    snapshot.forEach((child) => {
+      const data = child.val();
+      if ((data.status || "").toLowerCase() === "approved") {
+        hasApproved = true;
+        const card = document.createElement("div");
+        card.className = "teacher-card";
+
+        // Class dropdown
+        const select = document.createElement("select");
+        select.className = "class-select";
+        select.innerHTML = `<option value="">Select Class</option>` +
+          classOptions
+            .map(
+              (c) =>
+                `<option value="${c}" ${
+                  data.assignedClass === c ? "selected" : ""
+                }>${c}</option>`
+            )
+            .join("");
+        select.addEventListener("change", (e) => {
+          update(ref(db, "teachers/" + child.key), {
+            assignedClass: e.target.value,
+          });
+        });
+
+        card.innerHTML = `
+          <h3>🎉 ${data.fullName || "Unnamed"}</h3>
+          <div class="info">
+            <div><i class="fas fa-phone"></i> ${data.phoneNumber || "—"}</div>
+            <div><strong>Qualification:</strong> ${
+              data.qualification || "—"
+            } ${data.otherQualification ? "(" + data.otherQualification + ")" : ""}</div>
+            <div><strong>Subject:</strong> ${
+              data.subjectSpecialization || "—"
+            }</div>
+          </div>
+        `;
+
+        // Assigned Class
+        const assignDiv = document.createElement("div");
+        assignDiv.style.marginTop = "10px";
+        assignDiv.innerHTML = `<strong>Assigned Class:</strong>`;
+        assignDiv.appendChild(select);
+        card.appendChild(assignDiv);
+
+        // Buttons group
+        const btnGroup = document.createElement("div");
+        btnGroup.className = "btn-group";
+
+        // Call button
+        const callBtn = document.createElement("a");
+        callBtn.className = "call-btn";
+        callBtn.href = "tel:" + formatPhone(data.phoneNumber);
+        callBtn.innerHTML = '<i class="fas fa-phone-alt"></i> Call Teacher';
+        btnGroup.appendChild(callBtn);
+
+        // Delete button
+        const delBtn = document.createElement("button");
+        delBtn.className = "delete-btn";
+        delBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Delete';
+        delBtn.addEventListener("click", () => {
+          if (confirm(`Are you sure you want to delete ${data.fullName}?`)) {
+            remove(ref(db, "teachers/" + child.key))
+              .then(() => alert(`${data.fullName} deleted successfully.`))
+              .catch((err) => alert("Error deleting teacher: " + err));
+          }
+        });
+        btnGroup.appendChild(delBtn);
+
+        card.appendChild(btnGroup);
+        container.appendChild(card);
+      }
+    });
+
+    emptyMsg.style.display = hasApproved ? "none" : "block";
+  });
+</script>
+  </body>
+</html>

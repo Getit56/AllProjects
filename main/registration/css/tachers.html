@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Teacher Application - St. Joseph Preparatory School</title>
+
+<style>
+    /* ---------- ROOT COLORS ---------- */
+    :root {
+      --school-blue: #0d47a1;
+      --school-gold: #f9a825;
+      --light-bg: #f7f9fc;
+      --border-color: #d0d7de;
+    }
+
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: var(--light-bg);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .application-container {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      width: 95%;
+      max-width: 550px;
+      padding: 25px 30px;
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--school-blue);
+      margin-bottom: 10px;
+    }
+
+    p {
+      text-align: center;
+      color: #444;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: 600;
+      color: var(--school-blue);
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 15px;
+      outline: none;
+      transition: border 0.3s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--school-blue);
+    }
+
+    textarea {
+      resize: none;
+      min-height: 80px;
+    }
+
+    button {
+      width: 100%;
+      background: var(--school-blue);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 16px;
+      margin-top: 15px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: var(--school-gold);
+      color: #000;
+    }
+
+    .success-message {
+      text-align: center;
+      color: green;
+      margin-top: 15px;
+      font-weight: bold;
+      display: none;
+    }
+
+    .error-message {
+      text-align: center;
+      color: red;
+      margin-top: 10px;
+      display: none;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 25px;
+      font-size: 14px;
+      color: #777;
+    }
+</style>
+  </head>
+  <body>
+
+	<div class="application-container">
+	  <h1>Teacher Application</h1>
+	  <p>Apply to teach at <strong>St. Joseph Preparatory School</strong></p>
+
+	  <form id="teacherForm">
+		<label>Full Name</label>
+		<input type="text" id="name" required>
+
+		<label>Email</label>
+		<input type="email" id="email" required>
+
+		<label>Phone Number</label>
+		<input type="tel" id="phone" required>
+
+		<label>Subject Specialization</label>
+		<input type="text" id="subject" required>
+
+		<label>Qualification</label>
+		<input type="text" id="qualification" placeholder="e.g. B.Ed Mathematics" required>
+
+		<label>Years of Experience</label>
+		<select id="experience" required>
+		  <option value="">-- Select --</option>
+		  <option value="Less than 1 year">Less than 1 year</option>
+		  <option value="1-3 years">1-3 years</option>
+		  <option value="4-6 years">4-6 years</option>
+		  <option value="7+ years">7+ years</option>
+		</select>
+
+		<label>Why do you want to teach here?</label>
+		<textarea id="reason" placeholder="Briefly explain..." required></textarea>
+
+		<button type="submit">Submit Application</button>
+	  </form>
+
+	  <div class="success-message" id="successMessage">
+		✅ Your application has been submitted successfully!
+	  </div>
+	  <div class="error-message" id="errorMessage">
+		❌ Something went wrong. Please try again.
+	  </div>
+
+	  <footer>© 2025 St. Joseph Preparatory School</footer>
+	</div>
+
+	<!-- Firebase SDKs -->
+<script type="module">
+    // Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+    // Your Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAoSRm7DKQB0bTRCKNELxbEVQA7y0hGgT4",
+      authDomain: "school-registration-a9774.firebaseapp.com",
+      databaseURL: "https://school-registration-a9774-default-rtdb.firebaseio.com",
+      projectId: "school-registration-a9774",
+      storageBucket: "school-registration-a9774.appspot.com",
+      messagingSenderId: "715164144474",
+      appId: "1:715164144474:web:fa22f148ec1701a2ad1b91"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Handle form submission
+    const teacherForm = document.getElementById("teacherForm");
+    const successMessage = document.getElementById("successMessage");
+    const errorMessage = document.getElementById("errorMessage");
+
+    teacherForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const subject = document.getElementById("subject").value.trim();
+      const qualification = document.getElementById("qualification").value.trim();
+      const experience = document.getElementById("experience").value;
+      const reason = document.getElementById("reason").value.trim();
+
+      try {
+        const teacherRef = ref(db, "teacherApplications");
+        const newAppRef = push(teacherRef);
+        await set(newAppRef, {
+          name,
+          email,
+          phone,
+          subject,
+          qualification,
+          experience,
+          reason,
+          status: "pending",
+          dateApplied: new Date().toLocaleString()
+        });
+
+        teacherForm.reset();
+        successMessage.style.display = "block";
+        errorMessage.style.display = "none";
+      } catch (error) {
+        console.error("Error:", error);
+        successMessage.style.display = "none";
+        errorMessage.style.display = "block";
+      }
+    });
+</script>
+  </body>
+</html>

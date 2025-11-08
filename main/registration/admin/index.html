@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>St. Joseph Preparatory School Portal</title>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --blue:#0d47a1;
+  --gold:#f9a825;
+  --light:#f5f9ff;
+  --card:#ffffff;
+  --muted:#666;
+  --success:#2e7d32;
+  /* NEW: Define a danger color for the delete button */
+  --danger:#dc3545;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:Inter,system-ui,Segoe UI,Roboto;
+  background:linear-gradient(180deg,var(--light),#fff);
+  color:#222;
+}
+header{
+  background:linear-gradient(90deg,var(--blue),#144ea4);
+  color:#fff;
+  padding:20px;
+  text-align:center;
+  box-shadow:0 6px 18px rgba(13,47,102,0.18);
+}
+header h1{margin:0;font-size:1.25rem;font-weight:700;}
+
+/* Quick action buttons */
+.quick-actions{
+  display:flex;
+  justify-content:center;
+  gap:16px;
+  flex-wrap:wrap;
+  margin:20px 0;
+}
+.quick-actions button{
+  flex:1 1 180px;
+  max-width:200px;
+  background:var(--blue);
+  color:#fff;
+  font-weight:700;
+  padding:12px 20px;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  transition:all .2s ease;
+}
+.quick-actions button:hover{filter:brightness(1.05);}
+.quick-actions i{font-size:1.2rem;}
+
+/* Card grid */
+main{max-width:900px;margin:26px auto;padding:0 16px 80px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;}
+.card{
+  background: var(--card);
+  border-radius:16px;
+  padding:24px 20px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.05);
+  border:1px solid rgba(13,71,161,0.06);
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  transition: transform .25s ease, box-shadow .25s ease;
+  cursor:pointer;
+}
+.card:hover{
+  transform: translateY(-5px);
+  box-shadow:0 12px 24px rgba(0,0,0,0.08);
+}
+.card i{
+  font-size:2.5rem;
+  color:var(--blue);
+  margin-bottom:12px;
+}
+.card h3{
+  margin:0;
+  font-size:1.1rem;
+  font-weight:700;
+  color:#222;
+}
+.card p{
+  margin:6px 0 0;
+  color:var(--muted);
+  font-size:0.95rem;
+}
+
+footer{
+  text-align:center;color:var(--muted);
+  padding:20px 0;border-top:1px solid #ddd;
+  font-size:0.9rem;
+}
+</style>
+  </head>
+  <body>
+	<header>
+	  <h1>St. Joseph Preparatory School Portal</h1>
+	</header>
+
+	<div class="quick-actions">
+	  <button onclick="location.href='head.html'">
+		<i class="fas fa-user-check"></i> Approve Teachers
+	  </button>
+	  <button onclick="location.href='approvedteachers.html'">
+		<i class="fas fa-chalkboard-teacher"></i> View Teachers
+	  </button>
+	  <button onclick="location.href='announcementforteachers.html'">
+		<i class="fas fa-bullhorn"></i> Send Announcement
+	  </button>
+	  <button onclick="location.href='dashboard.html'">
+		<i class="Registration/delete.html"></i> Manage students
+	  </button>
+	</div>
+
+	<main>
+	  <div class="card" onclick="location.href='head.html'">
+		<i class="fas fa-user-check"></i>
+		<h3>Teacher Approvals</h3>
+		<p>Approve or reject teacher applications</p>
+	  </div>
+	  <div class="card" onclick="location.href='approvedteachers.html'">
+		<i class="fas fa-chalkboard-teacher"></i>
+		<h3>Approved Teachers</h3>
+		<p>View and assign classes to teachers</p>
+	  </div>
+	  <div class="card" onclick="location.href='announcementforteachers.html'">
+		<i class="fas fa-bullhorn"></i>
+		<h3>Announcements</h3>
+		<p>Send SMS announcements to teachers</p>
+	  </div>
+	  <div class="card" onclick="location.href='delete.html'">
+		<i class="fas fa-user-minus"></i>
+		<h3>Student Records</h3>
+		<p>View, add, edit, and delete student records</p>
+	  </div>
+	</main>
+
+	<footer>© 2025 St. Joseph Preparatory School — All Rights Reserved</footer>
+  </body>
+</html>
+

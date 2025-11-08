@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Student Approvals - St. Joseph Preparatory School</title>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+      --school-blue: #0d47a1;
+      --school-gold: #fbc02d;
+      --success: #2e7d32;
+      --danger: #c62828;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f4f6fb;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    header {
+      background-color: var(--school-blue);
+      color: #fff;
+      text-align: center;
+      padding: 25px 10px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    .search-bar {
+      text-align: right;
+      margin-bottom: 20px;
+    }
+
+    .search-bar input {
+      padding: 8px 14px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      width: 260px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    .search-bar input:focus {
+      border-color: var(--school-blue);
+      box-shadow: 0 0 4px rgba(13,71,161,0.3);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    }
+
+    .card h3 {
+      color: var(--school-blue);
+      margin: 0 0 10px;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .card p {
+      margin: 5px 0;
+      font-size: 0.95rem;
+    }
+
+    .actions {
+      margin-top: 15px;
+      display: flex;
+      justify-content: flex-start;
+      gap: 10px;
+    }
+
+    button {
+      padding: 7px 14px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .approve { background-color: var(--success); }
+    .approve:hover { background-color: #1b5e20; }
+
+    .reject { background-color: var(--danger); }
+    .reject:hover { background-color: #8e0000; }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      color: #777;
+      font-size: 0.9em;
+      padding: 20px 0;
+      background-color: #f9f9f9;
+      border-top: 1px solid #ddd;
+    }
+
+    .popup {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 12px 18px;
+      border-radius: 8px;
+      color: white;
+      font-weight: 600;
+      display: none;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+      animation: fadeIn 0.5s ease;
+      z-index: 999;
+    }
+
+    .popup.success { background: var(--success); }
+    .popup.error { background: var(--danger); }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Confirmation Modal */
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .modal-content h3 {
+      color: var(--school-blue);
+    }
+
+    .modal-buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+</style>
+  </head>
+
+  <body>
+	<header>
+	  <h1>Student Application Approvals</h1>
+	  <p class="subtitle">St. Joseph Preparatory School – Pokukrom</p>
+	</header>
+
+	<div class="container">
+	  <div class="search-bar">
+		<input type="text" id="searchInput" placeholder="Search by name or class...">
+	  </div>
+
+	  <div id="cardContainer" class="grid">
+		<p class="loading">Loading pending applications...</p>
+	  </div>
+	</div>
+
+	<footer>
+	  &copy; <span id="year"></span> St. Joseph Preparatory School - Pokukrom. All rights reserved.
+	</footer>
+
+	<div id="successPopup" class="popup success">Approved successfully!</div>
+	<div id="errorPopup" class="popup error">Error occurred. Try again.</div>
+
+	<!-- Confirmation Modal -->
+	<div id="confirmModal" class="modal">
+	  <div class="modal-content">
+		<h3 id="modalTitle"></h3>
+		<p id="modalMessage"></p>
+		<div class="modal-buttons">
+		  <button id="confirmYes" class="approve">Yes</button>
+		  <button id="confirmNo" class="reject">No</button>
+		</div>
+	  </div>
+	</div>
+
+	<!-- Firebase -->
+	<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+<script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAoSRm7DKQB0bTRCKNELxbEVQA7y0hGgT4",
+      authDomain: "school-registration-a9774.firebaseapp.com",
+      databaseURL: "https://school-registration-a9774-default-rtdb.firebaseio.com",
+      projectId: "school-registration-a9774",
+      storageBucket: "school-registration-a9774.appspot.com",
+      messagingSenderId: "967547068125",
+      appId: "1:967547068125:web:0a5708c69c84d1bac64534"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const pendingRef = db.ref("pending");
+    const studentsRef = db.ref("students");
+
+    const container = document.getElementById("cardContainer");
+    const searchInput = document.getElementById("searchInput");
+    const modal = document.getElementById("confirmModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalMessage = document.getElementById("modalMessage");
+    const confirmYes = document.getElementById("confirmYes");
+    const confirmNo = document.getElementById("confirmNo");
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    let allApplicants = {};
+    let pendingAction = null;
+    let pendingKey = null;
+
+    // -------------------- Load Pending Students --------------------
+    pendingRef.on("value", (snapshot) => {
+      allApplicants = snapshot.val() || {};
+      autoDeleteOldApplications(allApplicants);
+      displayApplicants(allApplicants);
+    });
+
+    // -------------------- Display Applicants --------------------
+    function displayApplicants(data) {
+      container.innerHTML = "";
+      const searchTerm = searchInput.value.toLowerCase();
+
+      const filtered = Object.keys(data).filter(key => {
+        const s = data[key];
+        return (
+          (s.firstName + " " + s.middleName + " " + s.surname).toLowerCase().includes(searchTerm) ||
+          (s.classApplying || "").toLowerCase().includes(searchTerm)
+        );
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<p class="loading">No matching applications found.</p>`;
+        return;
+      }
+
+      filtered.forEach(key => {
+        const s = data[key];
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <h3>${s.firstName || ""} ${s.middleName || ""} ${s.surname || ""}</h3>
+          <p><strong>Class:</strong> ${s.classApplying || "N/A"}</p>
+          <p><strong>Guardian:</strong> ${s.guardianName || "N/A"}</p>
+          <p><strong>Phone:</strong> ${s.phone || "N/A"}</p>
+          <p><strong>Applied:</strong> ${s.registrationDate || "N/A"}</p>
+          <div class="actions">
+            <button class="approve" onclick="openModal('approve','${key}')">Approve</button>
+            <button class="reject" onclick="openModal('reject','${key}')">Reject</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    searchInput.addEventListener("input", () => displayApplicants(allApplicants));
+
+    // -------------------- Modal Handling --------------------
+    function openModal(action, key) {
+      pendingAction = action;
+      pendingKey = key;
+      modalTitle.textContent = action === "approve" ? "Approve Application" : "Reject Application";
+      modalMessage.textContent = action === "approve"
+        ? "Are you sure you want to approve this student?"
+        : "Are you sure you want to reject this application?";
+      modal.style.display = "flex";
+    }
+
+    confirmNo.onclick = () => {
+      modal.style.display = "none";
+      pendingAction = null;
+      pendingKey = null;
+    };
+
+    confirmYes.onclick = () => {
+      modal.style.display = "none";
+      if (pendingAction === "approve") approveStudent(pendingKey);
+      else rejectStudent(pendingKey);
+    };
+
+    // -------------------- Approve Student --------------------
+    function approveStudent(key) {
+      pendingRef.child(key).once("value").then((snapshot) => {
+        const studentData = snapshot.val();
+        if (!studentData) return;
+
+        studentData.status = "Approved";
+
+        studentsRef.push(studentData, (error) => {
+          if (error) {
+            showPopup("error", "Error approving application!");
+          } else {
+            const smsContent = `ST.Joseph Preparatory School-Pokukrom\nDear ${studentData.firstName}, your admission for ${studentData.classApplying} has been approved.\nYou can start school immediately.\nThank you!`;
+            const smsURL = `https://smsc.hubtel.com/v1/messages/send?clientsecret=vcbxefjc&clientid=jnhvrhia&from=BPAALERTS&to=${studentData.phone}&content=${encodeURIComponent(smsContent)}`;
+
+            fetch(smsURL)
+              .then(() => showPopup("success", "Approved & SMS sent successfully!"))
+              .catch(() => showPopup("success", "Approved, but SMS failed."));
+
+            pendingRef.child(key).remove();
+          }
+        });
+      });
+    }
+
+    // -------------------- Reject Student --------------------
+    function rejectStudent(key) {
+      pendingRef.child(key).once("value").then(snapshot => {
+        const s = snapshot.val();
+        const smsContent = `ST.Joseph Preparatory School-Pokukrom\nDear ${s.firstName}, we regret to inform you that your admission for ${s.classApplying} has been declined.\nPlease contact the school office for further details.`;
+        const smsURL = `https://smsc.hubtel.com/v1/messages/send?clientsecret=vcbxefjc&clientid=jnhvrhia&from=BPAALERTS&to=${s.phone}&content=${encodeURIComponent(smsContent)}`;
+
+        fetch(smsURL)
+          .then(() => {
+            pendingRef.child(key).remove();
+            showPopup("error", "Application rejected & SMS sent.");
+          })
+          .catch(() => {
+            pendingRef.child(key).remove();
+            showPopup("error", "Application rejected but SMS failed.");
+          });
+      });
+    }
+
+    // -------------------- Auto Delete Old Applications --------------------
+    function autoDeleteOldApplications(data) {
+      const now = new Date();
+      Object.keys(data).forEach(key => {
+        const s = data[key];
+        if (!s.registrationDate) return;
+
+        const regDate = new Date(s.registrationDate);
+        const diffDays = Math.floor((now - regDate) / (1000 * 60 * 60 * 24));
+
+        if (diffDays >= 7) {
+          const smsContent = `ST.Joseph Preparatory School-Pokukrom\nDear ${s.firstName}, your admission has expired as you didn't report within 7 days (${s.registrationDate}).\nNo admission granted.`;
+          const smsURL = `https://smsc.hubtel.com/v1/messages/send?clientsecret=vcbxefjc&clientid=jnhvrhia&from=BPAALERTS&to=${s.phone}&content=${encodeURIComponent(smsContent)}`;
+
+          fetch(smsURL)
+            .then(() => pendingRef.child(key).remove())
+            .catch(() => pendingRef.child(key).remove());
+        }
+      });
+    }
+
+    // -------------------- Popup Function --------------------
+    function showPopup(type, message) {
+      const popup = document.getElementById(type === "success" ? "successPopup" : "errorPopup");
+      popup.textContent = message;
+      popup.style.display = "block";
+      setTimeout(() => popup.style.display = "none", 4000);
+    }
+</script>
+  </body>
+</html>

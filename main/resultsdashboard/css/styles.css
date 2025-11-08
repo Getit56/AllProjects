@@ -1,0 +1,281 @@
+/* -------------------- General (Minor Tweaks) -------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: #f0f4f8; /* Lighter, subtle background */
+  padding: 30px; /* Increased padding */
+  color: #333;
+}
+
+/* -------------------- Dashboard Container (Enhanced Shadow) -------------------- */
+.dashboard-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 30px; /* Increased padding */
+  background: #fff;
+  border-radius: 16px; /* Slightly more rounded corners */
+  /* Modern, subtle layered shadow */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 10px 30px rgba(0,0,0,0.05);
+}
+
+/* -------------------- Headings (Refined Typography) -------------------- */
+h1 {
+  text-align: center;
+  color: #0d47a1; /* Primary Blue */
+  margin-bottom: 5px;
+  font-size: 38px; /* Larger */
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+h2 {
+  text-align: center;
+  color: #546e7a; /* Secondary, softer color */
+  margin-bottom: 50px; /* More separation */
+  font-size: 24px;
+  font-weight: 400; /* Lighter weight for subtext */
+}
+
+/* -------------------- Filters (Polished Inputs) -------------------- */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Increased gap */
+  justify-content: center;
+  margin-bottom: 50px;
+  padding: 15px;
+  background-color: #f8fafd; /* Slight background for filter section */
+  border-radius: 10px;
+}
+
+.filters input,
+.filters select,
+.filters button {
+  padding: 12px 16px; /* Larger clickable area */
+  border-radius: 8px;
+  border: 1px solid #cfd8dc; /* Lighter border */
+  font-size: 16px;
+  color: #546e7a;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.filters input:focus,
+.filters select:focus {
+  border-color: #1565c0;
+  box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.2);
+  outline: none;
+}
+
+.filters input[type="number"] {
+  max-width: 140px; /* Slightly wider */
+}
+
+.filters button {
+  background-color: #1e88e5; /* Brighter, more engaging blue */
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s ease-in-out;
+}
+
+.filters button:hover {
+  background-color: #0d47a1;
+  transform: translateY(-2px); /* Subtle lift on hover */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* -------------------- Table Container (Elevated Readability) -------------------- */
+.table-container {
+  overflow-x: auto;
+  margin-bottom: 50px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05); /* Subtle shadow for table */
+}
+
+#studentsTable {
+  width: 100%;
+  border-collapse: separate; /* Use separate for border-radius on table elements */
+  border-spacing: 0;
+  min-width: 1500px; /* Ensures table is wide enough for all columns */
+  font-size: 16px; /* Standardized font size */
+}
+
+#studentsTable thead {
+  background-color: #1565c0;
+  color: #fff;
+}
+
+#studentsTable th {
+  padding: 18px;
+  text-align: left;
+  font-weight: 600; /* Bolder headers */
+  position: sticky; /* Sticky headers for better UX on scroll */
+  top: 0;
+  z-index: 10;
+}
+
+/* Rounded corners for the first/last header cells */
+#studentsTable th:first-child {
+  border-top-left-radius: 10px;
+}
+#studentsTable th:last-child {
+  border-top-right-radius: 10px;
+}
+
+#studentsTable td {
+  padding: 16px 18px;
+  text-align: left;
+  border-bottom: 1px solid #eceff1; /* Very light separator */
+}
+
+#studentsTable tr:nth-child(even) {
+  background-color: #fcfcfc; /* Very subtle alternation */
+}
+
+#studentsTable tbody tr:hover {
+  background-color: #e3f2fd;
+  cursor: pointer;
+  box-shadow: inset 3px 0 0 #1565c0; /* Highlight row with a left border */
+  transform: scale(1.005);
+  transition: background-color 0.2s, box-shadow 0.2s, transform 0.1s;
+}
+
+/* -------------------- Statistics Section (Premium Cards) -------------------- */
+.statistics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px; /* Increased gap */
+  justify-content: space-between; /* Better distribution */
+  margin-bottom: 40px; /* Move statistics above filters for prominence */
+}
+
+.stat-card {
+  flex: 1 1 200px;
+  min-width: 200px;
+  background-color: #fff; /* White background */
+  padding: 30px; /* Increased padding */
+  border-radius: 12px;
+  text-align: center;
+  border-left: 5px solid #1e88e5; /* Colored left border for emphasis */
+  /* More pronounced, but clean shadow */
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s;
+}
+
+.stat-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.stat-card h3 {
+  color: #546e7a;
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-card p {
+  font-size: 34px; /* Larger number */
+  font-weight: 800; /* Extra bold */
+  color: #0d47a1;
+  margin: 0;
+  line-height: 1.2;
+}
+
+
+/* -------------------- Responsive (Adjusted for new sizing) -------------------- */
+@media (max-width: 1200px) {
+  .dashboard-container {
+    padding: 30px 20px;
+  }
+  
+  #studentsTable {
+    min-width: 1200px; /* Reduced min-width */
+  }
+}
+
+@media (max-width: 1024px) {
+  .statistics {
+    gap: 15px;
+  }
+  
+  .stat-card {
+    flex: 1 1 45%; /* Two cards per row */
+  }
+
+  .filters input,
+  .filters select,
+  .filters button {
+    flex: 1 1 48%; /* Two elements per row */
+    max-width: unset;
+  }
+  
+  #studentsTable {
+    font-size: 15px;
+    min-width: 1000px;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 15px;
+  }
+  
+  h1 {
+    font-size: 30px;
+  }
+  
+  h2 {
+    font-size: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .filters input,
+  .filters select,
+  .filters button {
+    width: 100%;
+  }
+
+  .statistics {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .stat-card {
+    flex: 1 1 100%;
+  }
+  
+  #studentsTable {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stat-card {
+    padding: 20px;
+  }
+  
+  .stat-card p {
+    font-size: 28px;
+  }
+  
+  #studentsTable {
+    font-size: 12px;
+  }
+}
+
